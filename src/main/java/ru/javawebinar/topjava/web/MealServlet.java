@@ -28,6 +28,7 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
         log.trace("start");
         String page = req.getParameter("page");
         if ("create_meal".equals(page)) {
@@ -37,9 +38,35 @@ public class MealServlet extends HttpServlet {
             log.trace("update_meal");
             log.trace("meal id for update: {}", req.getParameter("meal_id"));
 
-            req.setAttribute("meal_id",req.getParameter("meal_id"));
-            log.trace("meal_id attribute: {}", req.getAttribute("meal_id"));
+            int id = 1;
+            try{
+                id = Integer.parseInt(req.getParameter("meal_id"));
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.trace("exception parse id. id: {}", id);
+            }
+
+            Meal meal = mealCRUD.getById(id);
+
+            req.setAttribute("meal",meal);
             req.getRequestDispatcher("/update_meal.jsp").forward(req,resp);
+        } else if ("delete_meal".equals(page)) {
+            log.trace("delete_meal");
+            log.trace("meal id for delete: {}", req.getParameter("meal_id"));
+            req.setAttribute("meal_id",req.getParameter("meal_id"));
+
+            int id = 1;
+            try{
+                id = Integer.parseInt(req.getParameter("meal_id"));
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.trace("exception parse id. id: {}", id);
+            }
+            mealCRUD.deleteById(id);
+            List<Meal> meals = (List<Meal>) getServletContext().getAttribute("meals");
+            List<MealTo> mealTos = mealToMealTo(meals);
+            req.setAttribute("mealTos", mealTos);
+            req.getRequestDispatcher("/meals.jsp").forward(req, resp);
         } else {
 
             List<Meal> meals;
@@ -50,12 +77,14 @@ public class MealServlet extends HttpServlet {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
             req.getRequestDispatcher("/meals.jsp").forward(req, resp);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
         log.trace("start");
         String formName = req.getParameter("formName");
         int id = 1;
@@ -63,10 +92,9 @@ public class MealServlet extends HttpServlet {
         LocalDateTime localDateTime;
         int calories = 0;
         if ("updateMealForm".equals(formName)) {
-            log.trace("meal id for update: {}", req.getParameter("mealId"));
 
             try{
-                log.trace("dateTime: {}",req.getParameter("mealId"));
+                log.trace("meal id for update: {}", req.getParameter("mealId"));
                 id = Integer.parseInt(req.getParameter("mealId"));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -133,7 +161,6 @@ public class MealServlet extends HttpServlet {
             }
 
 
-            //mealCRUD = new MealCRUDInMemory(getServletContext());
             mealCRUD.create(localDateTime,description,calories);
             List<Meal> meals = (List<Meal>) getServletContext().getAttribute("meals");
             List<MealTo> mealTos = mealToMealTo(meals);

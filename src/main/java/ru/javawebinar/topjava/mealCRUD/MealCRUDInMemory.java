@@ -5,7 +5,9 @@ import ru.javawebinar.topjava.model.Meal;
 
 import javax.servlet.ServletContext;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -42,11 +44,14 @@ public class MealCRUDInMemory implements MealCRUD{
     @Override
     public void updateById(Integer id, LocalDateTime localDateTime, String description, int calories) {
         List<Meal> meals = (List<Meal>) servletContext.getAttribute("meals");
-        Meal takedMeal = meals.stream().filter(meal -> meal.getId().equals(id)).findFirst().orElse(null);
         Meal updatedMeal = new Meal(localDateTime,description,calories);
         updatedMeal.setId(id);
-        meals.remove(takedMeal);
-        meals.add(updatedMeal);
+        meals.replaceAll(meal -> {
+            if (!Objects.equals(meal.getId(), id)) {
+                return meal;
+            }
+            return updatedMeal;
+        });
     }
 
     @Override
@@ -54,6 +59,12 @@ public class MealCRUDInMemory implements MealCRUD{
         List<Meal> meals = (List<Meal>) servletContext.getAttribute("meals");
         Meal takedMeal = meals.stream().filter(meal -> meal.getId().equals(id)).findFirst().orElse(null);
         meals.remove(takedMeal);
+    }
+
+    @Override
+    public Meal getById(Integer id) {
+        List<Meal> meals = (List<Meal>) servletContext.getAttribute("meals");
+        return meals.stream().filter(meal -> meal.getId().equals(id)).findFirst().get();
     }
 
     private int getNextId(List<Meal> meals) {

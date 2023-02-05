@@ -10,4 +10,5 @@ public interface MealCRUD {
     public List<Meal> readAll();
     public void updateById(Integer id, LocalDateTime localDateTime, String description, int calories);
     public void deleteById(Integer id);
+    public Meal getById(Integer id);
 }

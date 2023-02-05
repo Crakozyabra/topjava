@@ -2,9 +2,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
-<html>
+<html lang="ru">
     <head>
         <title>Title</title>
+        <meta charset="utf-8">
     </head>
     <body>
         <h1>Meals</h1>
@@ -35,7 +36,7 @@
                     <td>${meal.description}</td>
                     <td>${meal.calories}</td>
                     <td><a href="http://localhost:8080/topjava?page=update_meal&meal_id=${meal.id}">Update</a></td>
-                    <td><a href="">Delete</a></td>
+                    <td><a href="http://localhost:8080/topjava?page=delete_meal&meal_id=${meal.id}">Delete</a></td>
                 </tr>
 
             </c:forEach>

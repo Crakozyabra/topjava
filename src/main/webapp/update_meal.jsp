@@ -9,21 +9,21 @@
         <h1>Update meal</h1>
         <form method="post" action="/topjava/">
             <input type="hidden" name="formName" value="updateMealForm"/>
-            <input type="hidden" name="mealId" value="${meal_id}"/>
+            <input type="hidden" name="mealId" value="${meal.id}"/>
             <table>
                 <tr>
                     <td>DateTime:</td>
-                    <td><input name="dateTime" type="datetime-local"/></td>
+                    <td><input name="dateTime" type="datetime-local" value="${meal.dateTime}"/></td>
                 </tr>
 
                 <tr>
                     <td>Description:</td>
-                    <td><input name="description" type="text"/></td>
+                    <td><input name="description" type="text" value="${meal.description}"/></td>
                 </tr>
 
                 <tr>
                     <td>Calories:</td>
-                    <td><input name="calories" type="number"/></td>
+                    <td><input name="calories" type="number" value="${meal.calories}"/></td>
                 </tr>
 
                 <tr>
