@@ -1,19 +1,20 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
-<html>
+<html lang="ru">
     <head>
-        <title>Title</title>
-    </head>
+    <title>Title</title>
+</head>
     <body>
-        <h1>Update meal</h1>
-        <form method="post" action="/topjava/">
-            <input type="hidden" name="formName" value="updateMealForm"/>
+        <h1>${headerName}</h1>
+        <form method="post" action="${applicationContext}/meals">
+            <input type="hidden" name="formName" value="${formName}"/>
             <input type="hidden" name="mealId" value="${meal.id}"/>
             <table>
                 <tr>
                     <td>DateTime:</td>
-                    <td><input name="dateTime" type="datetime-local" value="${meal.dateTime}"/></td>
+                    <td>
+                        <input name="dateTime" type="datetime-local" value="${dateTime}${meal.dateTime}"/>
+                    </td>
                 </tr>
 
                 <tr>
@@ -28,8 +29,8 @@
 
                 <tr>
                     <td>
-                        <input type="submit" value="Update"/>
-                        <button><a  href="http://localhost:8080/topjava/">Cancel</a></button>
+                        <input type="submit" value="${actionName}"/>
+                        <button><a  href="${basePath}${applicationContext}/meals">Cancel</a></button>
                     </td>
                 </tr>
             </table>
