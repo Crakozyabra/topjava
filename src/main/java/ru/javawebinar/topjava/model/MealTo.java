@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class MealTo {
 
-    private Integer id;
+    private final int id;
 
     private final LocalDateTime dateTime;
 
@@ -32,7 +32,9 @@ public class MealTo {
                 '}';
     }
 
-    public Integer getId() { return id;}
+    public Integer getId() {
+        return id;
+    }
 
     public LocalDateTime getDateTime() {
         return dateTime;
@@ -49,6 +51,4 @@ public class MealTo {
     public boolean isExcess() {
         return excess;
     }
-
-
 }

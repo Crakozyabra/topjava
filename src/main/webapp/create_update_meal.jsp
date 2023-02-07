@@ -5,8 +5,8 @@
     <title>Title</title>
 </head>
     <body>
-        <h1>${headerName}</h1>
-        <form method="post" action="${applicationContext}/meals">
+        <h1>${not empty meal.id ? 'Update meal' : 'Add meal'}</h1>
+        <form method="post" action="${requestScope.get("javax.servlet.forward.context_path")}/meals">
             <input type="hidden" name="formName" value="${formName}"/>
             <input type="hidden" name="mealId" value="${meal.id}"/>
             <table>
@@ -30,7 +30,7 @@
                 <tr>
                     <td>
                         <input type="submit" value="${actionName}"/>
-                        <button><a  href="${basePath}${applicationContext}/meals">Cancel</a></button>
+                        <button><a  href="${basePath}${requestScope.get("javax.servlet.forward.context_path")}/meals">Cancel</a></button>
                     </td>
                 </tr>
             </table>
