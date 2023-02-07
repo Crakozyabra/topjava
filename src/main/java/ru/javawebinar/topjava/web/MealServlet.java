@@ -52,24 +52,18 @@ public class MealServlet extends HttpServlet {
                 log.trace("create_meal");
                 LocalDateTime localDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.now());
                 DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                req.setAttribute("actionName", "add");
-                req.setAttribute("headerName", "Add Meal");
                 req.setAttribute("formName", "createMealForm");
                 req.setAttribute("dateTime", localDateTime.format(dateTimeFormatter));
                 req.setAttribute("basePath", req.getScheme() + "://" + req.getHeader("Host"));
-                req.setAttribute("applicationContext", req.getContextPath());
                 req.getRequestDispatcher("create_update_meal.jsp").forward(req, resp);
             break;
             case "update":
                 log.trace("update_meal");
                 id = Integer.parseInt(req.getParameter("id"));
                 Meal meal = mealCrud.getById(id);
-                req.setAttribute("actionName", "update");
-                req.setAttribute("headerName", "Update Meal");
                 req.setAttribute("formName", "updateMealForm");
                 req.setAttribute("meal", meal);
                 req.setAttribute("basePath", req.getScheme() + "://" + req.getHeader("Host"));
-                req.setAttribute("applicationContext", req.getContextPath());
                 req.getRequestDispatcher("create_update_meal.jsp").forward(req, resp);
             break;
             case "delete":
@@ -82,7 +76,6 @@ public class MealServlet extends HttpServlet {
                 List<MealTo> mealTos = getMealToFromMeal(mealCrud.readAll());
                 req.setAttribute("mealTos", mealTos);
                 req.setAttribute("basePath", req.getScheme() + "://" + req.getHeader("Host"));
-                req.setAttribute("applicationContext", req.getContextPath());
                 req.getRequestDispatcher("meals.jsp").forward(req, resp);
             break;
         }
