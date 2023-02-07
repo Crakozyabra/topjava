@@ -29,7 +29,7 @@
 
                 <tr>
                     <td>
-                        <input type="submit" value="${actionName}"/>
+                        <input type="submit" value="${not empty meal.id ? 'Update' : 'Add'}"/>
                         <button><a  href="${basePath}${requestScope.get("javax.servlet.forward.context_path")}/meals">Cancel</a></button>
                     </td>
                 </tr>
