@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletException;
@@ -19,20 +19,19 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class MealServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
+    private ConfigurableApplicationContext applicationContext;
+
     private MealRestController mealRestController;
 
     @Override
     public void init() {
-        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");) {
-            mealRestController = appCtx.getBean(MealRestController.class);
-            mealRestController.getAll(SecurityUtil.authUserId(), SecurityUtil.authUserCaloriesPerDay()).forEach(System.out::println);
-        }
+        applicationContext = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        mealRestController = applicationContext.getBean(MealRestController.class);
     }
 
     @Override
@@ -40,36 +39,21 @@ public class MealServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
 
-        if (request.getParameter("formName") != null && "filterEntry".equals(request.getParameter("formName"))) {
-            LocalDate dateFrom = LocalDate.parse(request.getParameter("dateFrom"));
-            LocalDate dateTo = LocalDate.parse(request.getParameter("dateTo"));
-            LocalTime timeFrom = LocalTime.parse(request.getParameter("timeFrom"));
-            LocalTime timeTo = LocalTime.parse(request.getParameter("timeTo"));
-            log.info("{} {} {} {}", dateFrom, dateTo, timeFrom, timeTo);
-            List<MealTo> mealTos = mealRestController.
-                    getAll(SecurityUtil.authUserId(), SecurityUtil.authUserCaloriesPerDay()).stream().
-                    filter(mealTo -> DateTimeUtil.isBetweenDate(mealTo.getDateTime().toLocalDate(), dateFrom, dateTo)).
-                    filter(mealTo -> DateTimeUtil.isBetweenTime(mealTo.getDateTime().toLocalTime(), timeFrom, timeTo)).
-                    collect(Collectors.toList());
-            request.setAttribute("meals", mealTos);
-            log.info(mealTos.stream().map(MealTo::toString).collect(Collectors.joining(",")));
-            request.getRequestDispatcher("/meals.jsp").forward(request, response);
-        } else if (request.getParameter("formName") != null && "createUpdate".equals(request.getParameter("formName"))) {
+        if (request.getParameter("formName") != null && "createUpdate".equals(request.getParameter("formName"))) {
 
-            MealTo mealTo = new MealTo(
+            Meal meal = new Meal(
                     id.isEmpty() ? null : Integer.parseInt(id),
                     LocalDateTime.parse(request.getParameter("dateTime")),
                     request.getParameter("description"),
                     Integer.parseInt(request.getParameter("calories")),
-                    false,
                     SecurityUtil.authUserId()
             );
 
-            log.info(mealTo.getId() == null ? "Create {}" : "Update {}", mealTo);
-            if (mealTo.getId() == null) {
-                mealRestController.create(mealTo, SecurityUtil.authUserId(), SecurityUtil.authUserCaloriesPerDay());
+            log.info(meal.getId() == null ? "Create {}" : "Update {}", meal);
+            if (meal.getId() == null) {
+                mealRestController.create(meal);
             } else {
-                mealRestController.update(mealTo, SecurityUtil.authUserId());
+                mealRestController.update(meal, Integer.parseInt(id));
             }
             response.sendRedirect("meals");
         }
@@ -83,7 +67,7 @@ public class MealServlet extends HttpServlet {
             case "delete":
                 int id = getId(request);
                 log.info("Delete id={}", id);
-                mealRestController.delete(id, SecurityUtil.authUserId());
+                mealRestController.delete(id);
                 response.sendRedirect("meals");
                 break;
             case "create":
@@ -98,15 +82,60 @@ public class MealServlet extends HttpServlet {
                                 SecurityUtil.authUserId()
                         )
                         :
-                        mealRestController.get(getId(request), SecurityUtil.authUserId(), SecurityUtil.authUserCaloriesPerDay());
+                        mealRestController.get(getId(request));
                 request.setAttribute("meal", mealTo);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
+                break;
+            case "filter":
+                LocalDate dateFrom;
+                LocalDate dateTo;
+                LocalTime timeFrom;
+                LocalTime timeTo;
+
+                try {
+                    dateFrom = LocalDate.parse(request.getParameter("dateFrom"));
+                } catch (Exception e) {
+                    dateFrom = LocalDate.MIN;
+                }
+
+                try {
+                    dateTo = LocalDate.parse(request.getParameter("dateTo"));
+                } catch (Exception e) {
+                    dateTo = LocalDate.MAX;
+                }
+
+                try {
+                    timeFrom = LocalTime.parse(request.getParameter("timeFrom"));
+                } catch (Exception e) {
+                    timeFrom = LocalTime.MIN;
+                }
+
+                try {
+                    timeTo = LocalTime.parse(request.getParameter("timeTo"));
+                } catch (Exception e) {
+                    timeTo = LocalTime.MAX;
+                }
+
+                LocalDate effectivelyFinalDateFrom = dateFrom;
+                LocalDate effectivelyFinalDateTo = dateTo;
+                LocalTime effectivelyFinalTimeFrom = timeFrom;
+                LocalTime effectivelyFinalTimeTo = timeTo;
+
+                log.info("{} {} {} {}", dateFrom, dateTo, timeFrom, timeTo);
+                List<MealTo> mealTos = mealRestController.getAllFiltered(dateFrom, dateTo, timeFrom, timeTo);
+                request.setAttribute("meals", mealTos);
+                request.setAttribute("dateFrom", effectivelyFinalDateFrom);
+                request.setAttribute("dateTo", effectivelyFinalDateTo);
+                request.setAttribute("timeFrom", effectivelyFinalTimeFrom);
+                request.setAttribute("timeTo", effectivelyFinalTimeTo);
+
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "all":
             default:
                 log.info("getAll");
                 request.setAttribute("meals",
-                        mealRestController.getAll(SecurityUtil.authUserId(), SecurityUtil.authUserCaloriesPerDay()));
+                        mealRestController.getAll());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
@@ -115,5 +144,10 @@ public class MealServlet extends HttpServlet {
     private int getId(HttpServletRequest request) {
         String paramId = Objects.requireNonNull(request.getParameter("id"));
         return Integer.parseInt(paramId);
+    }
+
+    @Override
+    public void destroy() {
+        applicationContext.close();
     }
 }

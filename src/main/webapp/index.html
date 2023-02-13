@@ -10,5 +10,16 @@
             <li><a href="users">Users</a></li>
             <li><a href="meals">Meals</a></li>
         </ul>
+        <form method="post" action="users">
+            <input type="hidden" name="formName" value="selectUser"/>
+            <label>
+                <select size="3" name="authUserId">
+                    <option disabled>Выберите пользователя</option>
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                </select>
+            </label>
+            <p><input type="submit" value="Select"></p>
+        </form>
     </body>
 </html>

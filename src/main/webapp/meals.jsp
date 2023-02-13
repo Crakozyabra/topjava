@@ -23,12 +23,12 @@
     <h2>Meals</h2>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
-    <form method="post" action="meals">
-        <input type="hidden" name="formName" value="filterEntry"/>
-        <input type="date" name="dateFrom"/>
-        <input type="date" name="dateTo"/>
-        <input type="time" name="timeFrom"/>
-        <input type="time" name="timeTo"/>
+    <form method="get" action="meals">
+        <input type="hidden" name="action" value="filter"/>
+        <input type="date" name="dateFrom" value="${dateFrom}"/>
+        <input type="date" name="dateTo" value="${dateTo}"/>
+        <input type="time" name="timeFrom" value="${timeFrom}"/>
+        <input type="time" name="timeTo" value="${timeTo}"/>
         <button type="submit">Filter entry</button>
     </form>
     <table border="1" cellpadding="8" cellspacing="0">

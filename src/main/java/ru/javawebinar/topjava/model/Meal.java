@@ -27,14 +27,6 @@ public class Meal extends AbstractBaseEntity{
         this.userId = userId;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public LocalDateTime getDateTime() {
         return dateTime;
     }
@@ -59,17 +51,6 @@ public class Meal extends AbstractBaseEntity{
         return id == null;
     }
 
-    @Override
-    public String toString() {
-        return "Meal{" +
-                "id=" + id +
-                ", dateTime=" + dateTime +
-                ", description='" + description + '\'' +
-                ", calories=" + calories +
-                ", userId=" + userId +
-                '}';
-    }
-
     public Integer getUserId() {
         return userId;
     }
@@ -79,15 +60,13 @@ public class Meal extends AbstractBaseEntity{
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Meal meal = (Meal) o;
-        return calories == meal.calories && Objects.equals(dateTime, meal.dateTime) && Objects.equals(description, meal.description) && Objects.equals(userId, meal.userId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(dateTime, description, calories, userId);
+    public String toString() {
+        return "Meal{" +
+                "id=" + id +
+                ", dateTime=" + dateTime +
+                ", description='" + description + '\'' +
+                ", calories=" + calories +
+                ", userId=" + userId +
+                '}';
     }
 }

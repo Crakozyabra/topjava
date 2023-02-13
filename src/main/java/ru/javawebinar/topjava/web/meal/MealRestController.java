@@ -4,9 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.ValidationUtil;
+import ru.javawebinar.topjava.web.SecurityUtil;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Controller
@@ -20,25 +25,35 @@ public class MealRestController {
         this.service = service;
     }
 
-    public MealTo create(MealTo mealTo, int userId, int caloriesPerDay) {
-        log.info("meal for save: {}", mealTo.toString());
-        return service.create(mealTo, userId, caloriesPerDay);
+    public MealTo create(Meal meal) {
+        log.info("start meal for save: {}", meal.toString());
+        ValidationUtil.checkNew(meal);
+        return service.create(meal, SecurityUtil.authUserId(), SecurityUtil.authUserCaloriesPerDay());
     }
 
-    public void delete(int id, int userId) {
-        service.delete(id, userId);
+    public void delete(int id) {
+        log.info("start id: {}", id);
+        service.delete(id, SecurityUtil.authUserId());
     }
 
-    public MealTo get(int id, int userId, int caloriesPerDay) {
-        return service.get(id, userId, caloriesPerDay);
+    public MealTo get(int id) {
+        log.info("start id: {}", id);
+        return service.get(id, SecurityUtil.authUserId(), SecurityUtil.authUserCaloriesPerDay());
     }
 
-    public List<MealTo> getAll(int userId, int caloriesPerDay) {
-        List<MealTo> mealTos = service.getAll(userId, caloriesPerDay);
-        return mealTos;
+    public List<MealTo> getAll() {
+        log.info("start");
+        return service.getAll(SecurityUtil.authUserId(), SecurityUtil.authUserCaloriesPerDay());
     }
 
-    public void update(MealTo mealTo, int userId) {
-        service.update(mealTo, userId);
+    public void update(Meal meal, int id) {
+        log.info("start mealTo {}; id: {}", meal.toString(), id);
+        ValidationUtil.assureIdConsistent(meal, id);
+        service.update(meal, id, SecurityUtil.authUserId());
+    }
+
+    public List<MealTo> getAllFiltered(LocalDate dateFrom, LocalDate dateTo, LocalTime timeFrom, LocalTime timeTo) {
+        log.info("start dateFrom: {}; dateTo {}; timeFrom {}; timeTo {}", dateFrom, dateTo, timeFrom, timeTo);
+        return service.getAllFiltered(dateFrom, dateTo, timeFrom, timeTo, SecurityUtil.authUserId(), SecurityUtil.authUserCaloriesPerDay());
     }
 }
