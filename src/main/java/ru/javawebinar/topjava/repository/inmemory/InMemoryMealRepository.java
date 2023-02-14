@@ -18,13 +18,11 @@ import java.util.stream.Collectors;
 @Repository
 public class InMemoryMealRepository implements MealRepository {
     private static final Logger log = LoggerFactory.getLogger(InMemoryMealRepository.class);
-    private final Map<Integer, Meal> repository;
-    private final Map<Integer, Map<Integer, Meal>> repositoryMap; // Map<userId, Map<id, Meal>>
+    private final Map<Integer, Map<Integer, Meal>> repository; // Map<userId, Map<id, Meal>>
     private final AtomicInteger counter;
 
     public InMemoryMealRepository() {
         repository = new ConcurrentHashMap<>();
-        repositoryMap = new ConcurrentHashMap<>();
         counter = new AtomicInteger(0);
         MealsUtil.meals.forEach(this::save);
     }
@@ -32,48 +30,45 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public Meal save(Meal meal) {
         log.info("start meal: {}", meal);
-        if (meal.isNew()) {
-            meal.setId(counter.incrementAndGet());
-            repository.put(meal.getId(), meal);
-            return meal;
-        }
-
-        AtomicBoolean wasUpdated = new AtomicBoolean(false);
-        Meal updatedMeal = repository.computeIfPresent(meal.getId(), (findedId, findedMeal) -> {
-            if (findedMeal.getUserId().equals(meal.getUserId())) {
-                wasUpdated.set(true);
-                return meal;
+        repository.compute(meal.getUserId(), (oldUserId, oldMapValue) -> {
+            if (meal.isNew()) {
+                meal.setId(counter.incrementAndGet());
+            }
+            if (oldMapValue == null) {
+                log.info("such user is absent");
+                return new ConcurrentHashMap<Integer, Meal>() {{
+                    put(meal.getId(), meal);
+                }};
             } else {
-                wasUpdated.set(false);
-                return findedMeal;
+                log.info("such user is present");
+                oldMapValue.merge(meal.getId(), meal, (key, oldMeal) -> meal);
+                return oldMapValue;
             }
         });
-        return wasUpdated.get() ? updatedMeal : null;
+        return meal;
     }
 
     @Override
     public boolean delete(int id, int userId) {
         log.info("start id: {}; userId: {}", id, userId);
-        Meal meal = repository.get(id);
-        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-        repository.computeIfPresent(id, (findedId, findedMeal) -> {
-            if (findedMeal.getUserId().equals(userId)) {
-                atomicBoolean.set(true);
+        AtomicBoolean wasDeleted = new AtomicBoolean(false);
+        repository.compute(userId, (oldUserId, oldValue) -> {
+            if (oldValue == null) {
                 return null;
             } else {
-                atomicBoolean.set(false);
-                return findedMeal;
+                if (oldValue.remove(id) != null) {
+                    wasDeleted.set(true);
+                }
+                return oldValue;
             }
         });
-        return atomicBoolean.get();
+        return wasDeleted.get();
     }
 
     @Override
     public Meal get(int id, int userId) {
         log.info("start id: {}; userId: {}", id, userId);
-        Meal meal = repository.get(id);
-        log.info(meal == null ? null : meal.toString());
-        return meal.getUserId() == userId ? meal : null;
+        return repository.get(userId) == null ? null : repository.get(userId).get(id);
     }
 
     @Override
@@ -82,10 +77,13 @@ public class InMemoryMealRepository implements MealRepository {
         Comparator<Meal> comparatorDate = Comparator.comparing(Meal::getDate).reversed();
         Comparator<Meal> comparatorTime = Comparator.comparing(Meal::getTime).reversed();
         Comparator<Meal> comparatorResult = comparatorDate.thenComparing(comparatorTime);
-        return repository.values().stream()
-                .filter(meal -> meal.getUserId() == userId)
-                .sorted(comparatorResult)
-                .collect(Collectors.toList());
+        if (repository.get(userId) == null) {
+            return null;
+        } else {
+            return repository.get(userId).values().stream()
+                    .sorted(comparatorResult)
+                    .collect(Collectors.toList());
+        }
     }
 }
 
