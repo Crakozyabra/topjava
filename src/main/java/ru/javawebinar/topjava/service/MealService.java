@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
@@ -24,14 +23,13 @@ public class MealService {
 
     private MealRepository repository;
 
-    @Autowired
     public MealService(MealRepository repository) {
         this.repository = repository;
     }
 
-    public MealTo create(Meal meal, int userId, int caloriesPerDay) {
-        log.info("mealTo: {}; userId {}; caloriesPerDay {}", meal, userId, caloriesPerDay);
-        Meal createdMeal = repository.save(meal, userId);
+    public MealTo create(Meal meal) {
+        log.info("meal: {}", meal);
+        Meal createdMeal = repository.save(meal);
         log.info("created meal: {}", createdMeal);
         return MealsUtil.createTo(createdMeal, false);
     }
@@ -41,9 +39,9 @@ public class MealService {
         checkNotFoundWithId(repository.delete(id, userId), id);
     }
 
-    public MealTo get(int id, int userId, int caloriesPerDay) {
+    public Meal get(int id, int userId, int caloriesPerDay) {
         log.info("start id: {}; userId: {}; caloriesPerDay: {}", id, userId, caloriesPerDay);
-        return MealsUtil.createTo(checkNotFoundWithId(repository.get(id, userId), id), false);
+        return checkNotFoundWithId(repository.get(id, userId), id);
     }
 
     public List<MealTo> getAll(int userId, int caloriesPerDay) {
@@ -53,11 +51,17 @@ public class MealService {
 
     public List<MealTo> getAllFiltered(LocalDate dateFrom, LocalDate dateTo, LocalTime timeFrom, LocalTime timeTo, int userId, int caloriesPerDay) {
         log.info("dateFrom: {}; dateTo: {}, timeFrom: {}, timeTo: {}, userId: {}, caloriesPerDay: {}", dateFrom, dateTo, timeFrom, timeTo, userId, caloriesPerDay);
-        return MealsUtil.getTos(repository.getAllFiltered(dateFrom, dateTo, timeFrom, timeTo, userId), caloriesPerDay);
+        return MealsUtil.getTos(repository.getAll(userId), caloriesPerDay).stream()
+                .filter(mealTo -> DateTimeUtil.isBetween(mealTo.getDateTime().toLocalDate(), dateFrom, dateTo))
+                .filter(mealTo -> {
+                    if (mealTo.getDateTime().toLocalTime().equals(timeTo)) return false;
+                    return DateTimeUtil.isBetween(mealTo.getDateTime().toLocalTime(), timeFrom, timeTo);
+                })
+                .collect(Collectors.toList());
     }
 
     public void update(Meal meal, int id, int userId) {
         log.info("start mealTo: {}; id: {}; userId: {}", meal, id, userId);
-        checkNotFoundWithId(repository.update(meal, id, userId), id);
+        checkNotFoundWithId(repository.save(meal), id);
     }
 }

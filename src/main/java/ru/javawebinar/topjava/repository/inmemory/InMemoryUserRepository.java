@@ -49,7 +49,7 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        Comparator<User> userComparator = Comparator.comparing((User user) -> user.getName()).thenComparingInt(AbstractBaseEntity::getId);
+        Comparator<User> userComparator = Comparator.comparing(User::getName).thenComparing(User::getEmail);
         return repository.values().stream().sorted(userComparator).collect(Collectors.toList());
     }
 
