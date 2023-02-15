@@ -24,13 +24,14 @@ public class InMemoryMealRepository implements MealRepository {
     public InMemoryMealRepository() {
         repository = new ConcurrentHashMap<>();
         counter = new AtomicInteger(0);
-        MealsUtil.meals.forEach(this::save);
+        MealsUtil.meals.stream().limit(14).forEach(meal -> save(meal, 1));
+        MealsUtil.meals.stream().skip(14).limit(14).forEach(meal -> save(meal, 2));
     }
 
     @Override
-    public Meal save(Meal meal) {
+    public Meal save(Meal meal, int userId) {
         log.info("start meal: {}", meal);
-        repository.compute(meal.getUserId(), (oldUserId, oldMapValue) -> {
+        repository.compute(userId, (oldUserId, oldMapValue) -> {
             if (meal.isNew()) {
                 meal.setId(counter.incrementAndGet());
             }
@@ -41,7 +42,16 @@ public class InMemoryMealRepository implements MealRepository {
                 }};
             } else {
                 log.info("such user is present");
-                oldMapValue.merge(meal.getId(), meal, (key, oldMeal) -> meal);
+                oldMapValue.compute(meal.getId(), (oldId, oldMeal) -> {
+                    if (oldMeal == null) {
+                      return meal;
+                    } else {
+                      oldMeal.setDateTime(meal.getDateTime());
+                      oldMeal.setDescription(meal.getDescription());
+                      oldMeal.setCalories(meal.getCalories());
+                      return oldMeal;
+                    }
+                });
                 return oldMapValue;
             }
         });
@@ -68,20 +78,18 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public Meal get(int id, int userId) {
         log.info("start id: {}; userId: {}", id, userId);
-        return repository.get(userId) == null ? null : repository.get(userId).get(id);
+        Map<Integer, Meal> mealMap = repository.get(userId);
+        return mealMap == null ? null : mealMap.get(id);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
         log.info("start userId: {}", userId);
-        Comparator<Meal> comparatorDate = Comparator.comparing(Meal::getDate).reversed();
-        Comparator<Meal> comparatorTime = Comparator.comparing(Meal::getTime).reversed();
-        Comparator<Meal> comparatorResult = comparatorDate.thenComparing(comparatorTime);
         if (repository.get(userId) == null) {
             return null;
         } else {
             return repository.get(userId).values().stream()
-                    .sorted(comparatorResult)
+                    .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                     .collect(Collectors.toList());
         }
     }

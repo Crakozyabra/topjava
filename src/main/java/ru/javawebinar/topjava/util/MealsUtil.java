@@ -20,38 +20,38 @@ public class MealsUtil {
     public static final List<Meal> meals = Arrays.asList(
 
             // first user
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак (I пользователь)", 500, 1),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед (I пользователь)", 1000, 1),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин (I пользователь)", 500, 1),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение (I пользователь)", 100, 1),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак (I пользователь)", 1000, 1),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед (I пользователь)", 500, 1),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин (I пользователь)", 410, 1),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак (I пользователь)", 500),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед (I пользователь)", 1000),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин (I пользователь)", 500),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение (I пользователь)", 100),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак (I пользователь)", 1000),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед (I пользователь)", 500),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин (I пользователь)", 410),
 
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 28, 10, 0), "Завтрак (I пользователь)", 500, 1),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 28, 13, 0), "Обед (I пользователь)", 1000, 1),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 28, 20, 0), "Ужин (I пользователь)", 500, 1),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 29, 0, 0), "Еда на граничное значение (I пользователь)", 100, 1),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 29, 10, 0), "Завтрак (I пользователь)", 1000, 1),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 29, 13, 0), "Обед (I пользователь)", 500, 1),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 29, 20, 0), "Ужин (I пользователь)", 410, 1),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 28, 10, 0), "Завтрак (I пользователь)", 500),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 28, 13, 0), "Обед (I пользователь)", 1000),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 28, 20, 0), "Ужин (I пользователь)", 500),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 29, 0, 0), "Еда на граничное значение (I пользователь)", 100),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 29, 10, 0), "Завтрак (I пользователь)", 1000),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 29, 13, 0), "Обед (I пользователь)", 500),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 29, 20, 0), "Ужин (I пользователь)", 410),
 
             // second user
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак (II пользователь)", 500, 2),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед (II пользователь)", 1000, 2),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин (II пользователь)", 500, 2),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение (II пользователь)", 100, 2),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак (II пользователь)", 1000, 2),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед (II пользователь)", 500, 2),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин (II пользователь)", 410, 2),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак (II пользователь)", 500),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед (II пользователь)", 1000),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин (II пользователь)", 500),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение (II пользователь)", 100),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак (II пользователь)", 1000),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед (II пользователь)", 500),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин (II пользователь)", 410),
 
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 28, 10, 0), "Завтрак (II пользователь)", 500, 2),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 28, 13, 0), "Обед (II пользователь)", 1000, 2),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 28, 20, 0), "Ужин (II пользователь)", 500, 2),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 29, 0, 0), "Еда на граничное значение (II пользователь)", 100, 2),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 29, 10, 0), "Завтрак (II пользователь)", 1000, 2),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 29, 13, 0), "Обед (II пользователь)", 500, 2),
-            new Meal(LocalDateTime.of(2020, Month.JANUARY, 29, 20, 0), "Ужин (II пользователь)", 410, 2)
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 28, 10, 0), "Завтрак (II пользователь)", 500),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 28, 13, 0), "Обед (II пользователь)", 1000),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 28, 20, 0), "Ужин (II пользователь)", 500),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 29, 0, 0), "Еда на граничное значение (II пользователь)", 100),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 29, 10, 0), "Завтрак (II пользователь)", 1000),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 29, 13, 0), "Обед (II пользователь)", 500),
+            new Meal(LocalDateTime.of(2020, Month.JANUARY, 29, 20, 0), "Ужин (II пользователь)", 410)
     );
 
     public static List<MealTo> getTos(Collection<Meal> meals, int caloriesPerDay) {

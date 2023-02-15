@@ -27,9 +27,9 @@ public class MealService {
         this.repository = repository;
     }
 
-    public MealTo create(Meal meal) {
+    public MealTo create(Meal meal, int userId) {
         log.info("meal: {}", meal);
-        Meal createdMeal = repository.save(meal);
+        Meal createdMeal = repository.save(meal, userId);
         log.info("created meal: {}", createdMeal);
         return MealsUtil.createTo(createdMeal, false);
     }
@@ -62,6 +62,6 @@ public class MealService {
 
     public void update(Meal meal, int id, int userId) {
         log.info("start mealTo: {}; id: {}; userId: {}", meal, id, userId);
-        checkNotFoundWithId(repository.save(meal), id);
+        checkNotFoundWithId(repository.save(meal, userId), id);
     }
 }

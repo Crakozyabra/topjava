@@ -26,8 +26,8 @@ public class MealRestController {
     public MealTo create(Meal meal) {
         log.info("start meal for save: {}", meal);
         ValidationUtil.checkNew(meal);
-        meal.setUserId(SecurityUtil.authUserId());
-        return service.create(meal);
+        int authUserId = SecurityUtil.authUserId();
+        return service.create(meal, authUserId);
     }
 
     public void delete(int id) {

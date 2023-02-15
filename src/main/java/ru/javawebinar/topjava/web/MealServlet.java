@@ -42,8 +42,7 @@ public class MealServlet extends HttpServlet {
                 id.isEmpty() ? null : Integer.parseInt(id),
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")),
-                SecurityUtil.authUserId()
+                Integer.parseInt(request.getParameter("calories"))
         );
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
         if (meal.isNew()) {
