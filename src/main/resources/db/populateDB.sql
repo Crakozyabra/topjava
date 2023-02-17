@@ -1,6 +1,6 @@
-DELETE FROM topjava.public.user_role;
-DELETE FROM topjava.public.users;
-ALTER SEQUENCE topjava.public.global_seq RESTART WITH 100000;
+DELETE FROM user_role;
+DELETE FROM users;
+ALTER SEQUENCE global_seq RESTART WITH 100000;
 
 INSERT INTO topjava.public.users (name, email, password)
 VALUES ('User', 'user@yandex.ru', 'password'),
