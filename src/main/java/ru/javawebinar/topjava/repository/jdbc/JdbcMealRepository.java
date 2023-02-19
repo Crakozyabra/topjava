@@ -3,31 +3,35 @@ package ru.javawebinar.topjava.repository.jdbc;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
-import java.sql.PreparedStatement;
+import javax.sql.DataSource;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public class JdbcMealRepository implements MealRepository {
 
-    private final BeanPropertyRowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
+    private static final BeanPropertyRowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
     private final JdbcTemplate jdbcTemplate;
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public JdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    private final SimpleJdbcInsert simpleJdbcInsert;
+
+    public JdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
+                .withTableName("meals")
+                .usingColumns("date_time", "description", "calories", "user_id")
+                .usingGeneratedKeyColumns("id");
     }
 
     @Override
@@ -39,10 +43,10 @@ public class JdbcMealRepository implements MealRepository {
                 .addValue("calories", meal.getCalories())
                 .addValue("user_id", userId);
         if (meal.isNew()) {
-            KeyHolder keyHolder = new GeneratedKeyHolder();
-            namedParameterJdbcTemplate.update("INSERT INTO meals (date_time, description, calories, user_id) VALUES (:date_time, :description, :calories, :user_id)", map, keyHolder, new String[] {"id"});
-            meal.setId((Integer) keyHolder.getKey());
-        } else if (namedParameterJdbcTemplate.update("UPDATE meals SET date_time=:date_time, description=:description, calories=:calories, user_id=:user_id WHERE id=:id AND user_id=:user_id", map) == 0) {
+            Number newId = simpleJdbcInsert.executeAndReturnKey(map);
+            meal.setId(newId.intValue());
+        } else if (namedParameterJdbcTemplate.update("UPDATE meals SET date_time=:date_time, description=:description," +
+                "calories=:calories, user_id=:user_id WHERE id=:id AND user_id=:user_id", map) == 0) {
             return null;
         }
         return meal;
@@ -62,7 +66,6 @@ public class JdbcMealRepository implements MealRepository {
     @Override
     public List<Meal> getAll(int userId) {
         List<Meal> meals = jdbcTemplate.query("SELECT id, date_time, description, calories FROM meals WHERE user_id = ? ORDER BY date_time DESC ", ROW_MAPPER, userId);
-        meals.forEach(System.out::println);
         return meals;
     }
 
