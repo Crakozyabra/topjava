@@ -40,9 +40,10 @@ public class MealServiceTest {
     }
 
     @Test
-    public void duplicateDateTimePerUser() {
-        service.create(getNew(), USER_ID);
-        assertThrows(DuplicateKeyException.class, () -> service.create(getUpdate(), USER_ID));
+    public void createDuplicateDateTimePerUser() {
+        Meal newMeal = getNew();
+        newMeal.setDateTime(EXISTING_USERS_MEAL_DATE_TIME);
+        assertThrows(DuplicateKeyException.class, () -> service.create(newMeal, USER_ID));
     }
 
     @Test
@@ -58,7 +59,7 @@ public class MealServiceTest {
     }
 
     @Test
-    public void getNotOtherUserEntry() {
+    public void getOtherUserEntry() {
         assertThrows(NotFoundException.class, () -> service.get(ADMIN_MEAL_ID, USER_ID));
         assertThrows(NotFoundException.class, () -> service.get(USER_MEAL_ID, ADMIN_ID));
     }
@@ -70,9 +71,8 @@ public class MealServiceTest {
     }
 
     @Test
-    public void deleteDouble() {
-        service.delete(USER_MEAL_ID, USER_ID);
-        assertThrows(NotFoundException.class, () -> service.delete(USER_MEAL_ID, USER_ID));
+    public void deleteNotFoundEntry() {
+        assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND_ID, USER_ID));
     }
 
     @Test
@@ -84,13 +84,13 @@ public class MealServiceTest {
     @Test
     public void getAllUserMeal() {
         List<Meal> userMeals = service.getAll(USER_ID);
-        assertMatch(userMeals, USER_MEALS);
+        assertMatch(userMeals, userMeals);
     }
 
     @Test
     public void getAllAdminMeal() {
         List<Meal> adminMeals = service.getAll(ADMIN_ID);
-        assertMatch(adminMeals, ADMIN_MEALS);
+        assertMatch(adminMeals, adminMeals);
     }
 
     @Test
@@ -103,7 +103,7 @@ public class MealServiceTest {
     }
 
     @Test
-    public void updateMealOfotherUser() {
+    public void updateMealOfOtherUser() {
         Meal adminMeal = getUpdate();
         adminMeal.setId(ADMIN_MEAL_ID);
         assertThrows(NotFoundException.class, () -> service.update(adminMeal, USER_ID));

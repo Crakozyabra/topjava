@@ -1,19 +1,19 @@
 package ru.javawebinar.topjava;
 
+import ru.javawebinar.topjava.model.AbstractBaseEntity;
 import ru.javawebinar.topjava.model.Meal;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class MealTestData {
-    public static final int USER_MEAL_ID = START_SEQ + 10;
-    public static final int ADMIN_MEAL_ID = START_SEQ + 20;
-    public static final int NOT_FOUND_ID = START_SEQ + 1000;
+    public static final int USER_MEAL_ID = AbstractBaseEntity.START_SEQ + 10;
+    public static final int ADMIN_MEAL_ID = AbstractBaseEntity.START_SEQ + 20;
+    public static final int NOT_FOUND_ID = AbstractBaseEntity.START_SEQ + 1000;
 
-    public static final Meal[] USER_MEALS = new Meal[]{
+    public static final Meal[] userMeals = new Meal[]{
 
             new Meal(100009, LocalDateTime.of(2020, 1, 31, 20, 0), "Ужин (User)", 410),
             new Meal(100008, LocalDateTime.of(2020, 1, 31, 13, 0), "Обед (User)", 500),
@@ -31,7 +31,7 @@ public class MealTestData {
             new Meal(100010, LocalDateTime.of(2020, 1, 28, 10, 0), "Завтрак (User)", 500)
     };
 
-    public static final Meal[] ADMIN_MEALS = new Meal[]{
+    public static final Meal[] adminMeals = new Meal[]{
             new Meal(100023, LocalDateTime.of(2020, 1, 31, 20, 0), "Ужин (Admin)", 410),
             new Meal(100022, LocalDateTime.of(2020, 1, 31, 13, 0), "Обед (Admin)", 500),
             new Meal(100021, LocalDateTime.of(2020, 1, 31, 10, 0), "Завтрак (Admin)", 1000),
@@ -48,6 +48,8 @@ public class MealTestData {
             new Meal(100024, LocalDateTime.of(2020, 1, 28, 10, 0), "Завтрак (Admin)", 500)
     };
 
+    public static final LocalDateTime EXISTING_USERS_MEAL_DATE_TIME = userMeals[0].getDateTime();
+
     public static Meal getNew() {
         return new Meal(LocalDateTime.MIN, "New meal", 100);
     }
@@ -57,7 +59,7 @@ public class MealTestData {
     }
 
     public static Meal getSaved() {
-        return new Meal(USER_MEAL_ID, LocalDateTime.of(2020, 1, 28, 10, 0), "Завтрак (User)", 500);
+        return userMeals[13];
     }
 
     public static void assertMatch(Meal actual, Meal expected) {

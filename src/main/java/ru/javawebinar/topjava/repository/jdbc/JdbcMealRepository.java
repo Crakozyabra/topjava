@@ -30,7 +30,6 @@ public class JdbcMealRepository implements MealRepository {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("meals")
-                .usingColumns("date_time", "description", "calories", "user_id")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -46,7 +45,7 @@ public class JdbcMealRepository implements MealRepository {
             Number newId = simpleJdbcInsert.executeAndReturnKey(map);
             meal.setId(newId.intValue());
         } else if (namedParameterJdbcTemplate.update("UPDATE meals SET date_time=:date_time, description=:description," +
-                "calories=:calories, user_id=:user_id WHERE id=:id AND user_id=:user_id", map) == 0) {
+                "calories=:calories WHERE id=:id AND user_id=:user_id", map) == 0) {
             return null;
         }
         return meal;
@@ -59,18 +58,21 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        List<Meal> meals = jdbcTemplate.query("SELECT id, date_time, description, calories FROM meals WHERE id = ? AND user_id = ?", ROW_MAPPER, id, userId);
+        List<Meal> meals = jdbcTemplate.query("SELECT id, date_time, description, calories FROM meals WHERE id = ? AND" +
+                " user_id = ?", ROW_MAPPER, id, userId);
         return DataAccessUtils.singleResult(meals);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        List<Meal> meals = jdbcTemplate.query("SELECT id, date_time, description, calories FROM meals WHERE user_id = ? ORDER BY date_time DESC ", ROW_MAPPER, userId);
+        List<Meal> meals = jdbcTemplate.query("SELECT id, date_time, description, calories FROM meals WHERE user_id = ?" +
+                " ORDER BY date_time DESC ", ROW_MAPPER, userId);
         return meals;
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return jdbcTemplate.query("SELECT id, date_time, description, calories FROM meals WHERE user_id = ? AND date_time >= ? AND date_time < ? ORDER BY date_time DESC", ROW_MAPPER, userId, startDateTime, endDateTime);
+        return jdbcTemplate.query("SELECT id, date_time, description, calories FROM meals WHERE user_id = ? AND" +
+                " date_time >= ? AND date_time < ? ORDER BY date_time DESC", ROW_MAPPER, userId, startDateTime, endDateTime);
     }
 }
