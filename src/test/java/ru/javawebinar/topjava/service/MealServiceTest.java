@@ -49,7 +49,7 @@ public class MealServiceTest {
     @Test
     public void get() {
         Meal meal = service.get(USER_MEAL_ID, USER_ID);
-        assertMatch(meal, getSaved());
+        assertMatch(meal, userMeals[13]);
     }
 
     @Test
@@ -110,5 +110,11 @@ public class MealServiceTest {
         Meal userMeal = getUpdate();
         userMeal.setId(USER_MEAL_ID);
         assertThrows(NotFoundException.class, () -> service.update(userMeal, ADMIN_ID));
+    }
+
+    @Test
+    public void getBetweenHalfOpen() {
+        List<Meal> meals = service.getBetweenInclusive(FLOOR_MEAL_DATE_FILTER, CEIL_MEAL_DATE_FILTER, USER_ID);
+        assertMatch(meals, filteredMeals);
     }
 }

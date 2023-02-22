@@ -3,8 +3,10 @@ package ru.javawebinar.topjava;
 import ru.javawebinar.topjava.model.AbstractBaseEntity;
 import ru.javawebinar.topjava.model.Meal;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,6 +14,8 @@ public class MealTestData {
     public static final int USER_MEAL_ID = AbstractBaseEntity.START_SEQ + 10;
     public static final int ADMIN_MEAL_ID = AbstractBaseEntity.START_SEQ + 20;
     public static final int NOT_FOUND_ID = AbstractBaseEntity.START_SEQ + 1000;
+    public static final LocalDate CEIL_MEAL_DATE_FILTER = LocalDate.of(2020, 1, 30);
+    public static final LocalDate FLOOR_MEAL_DATE_FILTER = LocalDate.of(2020, 1, 29);
 
     public static final Meal[] userMeals = new Meal[]{
 
@@ -50,16 +54,14 @@ public class MealTestData {
 
     public static final LocalDateTime EXISTING_USERS_MEAL_DATE_TIME = userMeals[0].getDateTime();
 
+    public static final List<Meal> filteredMeals = Arrays.asList(Arrays.copyOfRange(userMeals, 4 , 11));
+
     public static Meal getNew() {
         return new Meal(LocalDateTime.MIN, "New meal", 100);
     }
 
     public static Meal getUpdate() {
         return new Meal(LocalDateTime.MIN, "Update meal", 300);
-    }
-
-    public static Meal getSaved() {
-        return userMeals[13];
     }
 
     public static void assertMatch(Meal actual, Meal expected) {
