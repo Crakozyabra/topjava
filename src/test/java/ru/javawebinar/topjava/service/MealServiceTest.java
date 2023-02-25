@@ -1,8 +1,11 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
@@ -10,10 +13,14 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.junitrules.TestDurationRule;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -31,6 +38,16 @@ public class MealServiceTest {
 
     @Autowired
     private MealService service;
+
+    private final static Map<String, Long> testsDuration = new LinkedHashMap<>();
+
+    @Rule
+    public final TestDurationRule testDurationRule = new TestDurationRule(testsDuration);
+
+    @Rule
+    public final TestRule chain = RuleChain.outerRule(testDurationRule);
+
+    private static Logger logger = LoggerFactory.getLogger(MealServiceTest.class);
 
     @Test
     public void delete() {
@@ -109,5 +126,15 @@ public class MealServiceTest {
     @Test
     public void getBetweenWithNullDates() {
         MEAL_MATCHER.assertMatch(service.getBetweenInclusive(null, null, USER_ID), meals);
+    }
+
+    @AfterClass
+    public static void printTestDuration() {
+        String durationTestStatistic = testsDuration
+                .entrySet()
+                .stream()
+                .map(entry -> entry.getKey() + " - " + entry.getValue())
+                .collect(Collectors.joining("\n"));
+        logger.info(durationTestStatistic);
     }
 }
