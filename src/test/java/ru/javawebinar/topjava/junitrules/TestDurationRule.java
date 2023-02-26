@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TestDurationRule implements TestRule {
-    private static final Map<String, Long> testsDuration = new LinkedHashMap<>();
+    private static final Map<String, String> testsDuration = new LinkedHashMap<>();
 
     private final static Logger logger = LoggerFactory.getLogger(TestDurationRule.class);
 
@@ -22,11 +22,12 @@ public class TestDurationRule implements TestRule {
             @Override
             public void evaluate() throws Throwable {
                 String testName = description.getMethodName();
-                Long start = System.currentTimeMillis();
+                Long start = System.nanoTime();
                 statement.evaluate();
-                Long duration = System.currentTimeMillis() - start;
-                logger.info(testName + " - " + duration + " ms\n");
-                testsDuration.put(testName, duration);
+                Long duration = System.nanoTime() - start;
+                String milliDuration = String.format("%7.2f", duration / 1_000_000.0);
+                logger.info(testName + " - " + milliDuration + " ms\n");
+                testsDuration.put(testName, milliDuration);
             }
         };
     }
@@ -45,11 +46,8 @@ public class TestDurationRule implements TestRule {
     }
 
     private static String getSpaces(int spaceQuanity) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < spaceQuanity; i++) {
-            stringBuilder.append(" ");
-        }
-        return stringBuilder.toString();
+        spaceQuanity = spaceQuanity <= 0 ? 1 : spaceQuanity + 1;
+        return String.format("%" + spaceQuanity + "s", " ");
     }
 
     private static int getMaxLength(Set<String> strings) {

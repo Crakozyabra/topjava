@@ -41,7 +41,12 @@ public class MealServiceTest {
     @Rule
     public final TestDurationRule testDurationRule = new TestDurationRule();
 
-    private static Logger logger = LoggerFactory.getLogger(MealServiceTest.class);
+    static private Logger logger = LoggerFactory.getLogger(MealServiceTest.class);
+
+    @AfterClass
+    static public void printTestDuration() {
+        logger.info(TestDurationRule.getTestDurationStatistic());
+    }
 
     @Test
     public void delete() {
@@ -120,10 +125,5 @@ public class MealServiceTest {
     @Test
     public void getBetweenWithNullDates() {
         MEAL_MATCHER.assertMatch(service.getBetweenInclusive(null, null, USER_ID), meals);
-    }
-
-    @AfterClass
-    public static void printTestDuration() {
-        logger.info(TestDurationRule.getTestDurationStatistic());
     }
 }
