@@ -33,13 +33,12 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 })
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@Ignore
 public class MealServiceTest {
 
     @Autowired
     private MealService service;
 
-    private final static Map<String, Long> testsDuration = new LinkedHashMap<>();
+    private static final Map<String, Long> testsDuration = new LinkedHashMap<>();
 
     @Rule
     public final TestDurationRule testDurationRule = new TestDurationRule(testsDuration);

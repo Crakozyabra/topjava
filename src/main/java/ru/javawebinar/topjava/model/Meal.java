@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Range;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -12,11 +13,13 @@ import java.time.LocalTime;
 @NamedQueries({
         @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal WHERE id=:id AND user.id=:user_id"),
         @NamedQuery(name = Meal.GET, query = "FROM Meal WHERE id=:id AND user.id=:user_id"),
-        @NamedQuery(name = Meal.GET_ALL, query = "FROM Meal m JOIN FETCH m.user u WHERE u.id=:user_id ORDER BY m.dateTime DESC"),
-        @NamedQuery(name = Meal.GET_ALL_FILTERED, query = "FROM Meal m JOIN FETCH m.user u WHERE m.dateTime >= :startDateTime AND m.dateTime < :endDateTime AND u.id=:user_id ORDER BY m.dateTime DESC")
+        @NamedQuery(name = Meal.GET_ALL, query = "FROM Meal WHERE user.id=:user_id ORDER BY dateTime DESC"),
+        @NamedQuery(name = Meal.GET_ALL_FILTERED, query = "FROM Meal WHERE dateTime >= :startDateTime AND " +
+                "dateTime < :endDateTime AND user.id=:user_id ORDER BY dateTime DESC")
 })
 @Entity
-@Table(name = "meal")
+@Table(name = "meal", uniqueConstraints = @UniqueConstraint(name = "meal_unique_user_datetime_idx",
+        columnNames = {"user_id", "date_time"}))
 public class Meal extends AbstractBaseEntity {
 
     public static final String DELETE = "Meal.delete";
@@ -29,15 +32,17 @@ public class Meal extends AbstractBaseEntity {
     private LocalDateTime dateTime;
 
     @NotBlank
+    @Size(min = 2, max = 120)
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Range
+    @Range(min = 10, max = 5000)
     @Column(name = "calories", nullable = false)
     private int calories;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     public Meal() {

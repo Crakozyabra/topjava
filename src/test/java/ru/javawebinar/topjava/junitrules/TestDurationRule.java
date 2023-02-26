@@ -35,8 +35,4 @@ public class TestDurationRule implements TestRule {
             }
         };
     }
-
-    public Map<String, Long> getTestDuration() {
-        return testsDuration;
-    }
 }
