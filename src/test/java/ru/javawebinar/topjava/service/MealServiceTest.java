@@ -38,13 +38,8 @@ public class MealServiceTest {
     @Autowired
     private MealService service;
 
-    private static final Map<String, Long> testsDuration = new LinkedHashMap<>();
-
     @Rule
-    public final TestDurationRule testDurationRule = new TestDurationRule(testsDuration);
-
-    @Rule
-    public final TestRule chain = RuleChain.outerRule(testDurationRule);
+    public final TestDurationRule testDurationRule = new TestDurationRule();
 
     private static Logger logger = LoggerFactory.getLogger(MealServiceTest.class);
 
@@ -129,11 +124,6 @@ public class MealServiceTest {
 
     @AfterClass
     public static void printTestDuration() {
-        String durationTestStatistic = testsDuration
-                .entrySet()
-                .stream()
-                .map(entry -> entry.getKey() + " - " + entry.getValue())
-                .collect(Collectors.joining("\n"));
-        logger.info(durationTestStatistic);
+        logger.info(TestDurationRule.getTestDurationStatistic());
     }
 }
