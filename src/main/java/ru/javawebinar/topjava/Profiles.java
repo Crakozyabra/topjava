@@ -17,8 +17,10 @@ public class Profiles {
     //  Get DB profile depending of DB driver in classpath
     public static String getActiveDbProfile() {
         if (ClassUtils.isPresent("org.postgresql.Driver", null)) {
+            System.out.println("POSTGRES_DB present: " + POSTGRES_DB);
             return POSTGRES_DB;
         } else if (ClassUtils.isPresent("org.hsqldb.jdbcDriver", null)) {
+            System.out.println("HSQL_DB present: " + HSQL_DB);
             return HSQL_DB;
         } else {
             throw new IllegalStateException("Could not find DB driver");

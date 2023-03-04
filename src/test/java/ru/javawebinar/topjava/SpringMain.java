@@ -2,8 +2,11 @@ package ru.javawebinar.topjava;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
@@ -32,8 +35,15 @@ public class SpringMain {
             System.out.println();
             System.out.println(mealController.getBetween(null, null, null, null));
         }*/
-
+        System.setProperty("spring.profiles.active", "postgres, jdbc");
+        // System.setProperty("spring.profiles.active", "postgres, jpa, datajpa_jpa");
         try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-db.xml")) {
+            String[] strings = appCtx.getBeanDefinitionNames();
+            System.out.println(String.join("\n", strings));
+            MealService mealService = appCtx.getBean(MealService.class);
+            List<Meal> meals = mealService.getAll(100000);
+            System.out.println(meals.size());
+            meals.forEach(System.out::println);
             //System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
 
         }
