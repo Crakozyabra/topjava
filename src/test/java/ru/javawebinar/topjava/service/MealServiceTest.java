@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -18,7 +19,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 public abstract class MealServiceTest extends BaseServiceTest {
 
     @Autowired
-    private MealService service;
+    protected MealService service;
 
     @Test
     public void delete() {
@@ -99,4 +100,6 @@ public abstract class MealServiceTest extends BaseServiceTest {
     public void getBetweenWithNullDates() {
         MEAL_MATCHER.assertMatch(service.getBetweenInclusive(null, null, USER_ID), meals);
     }
+
+
 }

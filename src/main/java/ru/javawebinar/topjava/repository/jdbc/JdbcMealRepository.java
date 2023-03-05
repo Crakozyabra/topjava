@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,13 +7,11 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 
 public abstract class JdbcMealRepository implements MealRepository {
 
@@ -35,15 +32,18 @@ public abstract class JdbcMealRepository implements MealRepository {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
+    protected Object getDateTimeMapping(LocalDateTime localDateTime) {
+        return localDateTime;
+    }
+
     @Override
     public Meal save(Meal meal, int userId) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", meal.getId())
                 .addValue("description", meal.getDescription())
                 .addValue("calories", meal.getCalories())
-                .addValue("date_time", meal.getDateTime())
+                .addValue("date_time", getDateTimeMapping(meal.getDateTime()))
                 .addValue("user_id", userId);
-
         if (meal.isNew()) {
             Number newId = insertMeal.executeAndReturnKey(map);
             meal.setId(newId.intValue());
@@ -80,6 +80,6 @@ public abstract class JdbcMealRepository implements MealRepository {
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
         return jdbcTemplate.query(
                 "SELECT * FROM meal WHERE user_id=?  AND date_time >=  ? AND date_time < ? ORDER BY date_time DESC",
-                ROW_MAPPER, userId, startDateTime, endDateTime);
+                ROW_MAPPER, userId, getDateTimeMapping(startDateTime), getDateTimeMapping(endDateTime));
     }
 }

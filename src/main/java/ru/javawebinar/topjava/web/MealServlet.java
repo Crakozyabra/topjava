@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.web;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.util.StringUtils;
+import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Objects;
 
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
@@ -29,12 +31,7 @@ public class MealServlet extends HttpServlet {
     public void init() {
         springContext = new GenericXmlApplicationContext();
         ConfigurableEnvironment configurableEnvironment = springContext.getEnvironment();
-        configurableEnvironment.setActiveProfiles("postgres", "datajpa_jpa", "datajpa");
-        /*configurableEnvironment.setActiveProfiles("postgres", "datajpa_jpa", "jpa");
-        configurableEnvironment.setActiveProfiles("postgres", "jdbc");
-        configurableEnvironment.setActiveProfiles("hsqldb", "datajpa_jpa", "datajpa");
-        configurableEnvironment.setActiveProfiles("hsqldb", "datajpa_jpa", "jpa");
-        configurableEnvironment.setActiveProfiles("hsqldb", "jdbc");*/
+        configurableEnvironment.setActiveProfiles(Profiles.getActiveDbProfile(), Profiles.REPOSITORY_IMPLEMENTATION);
         springContext.load("spring/spring-app.xml", "spring/spring-db.xml");
         springContext.refresh();
         mealController = springContext.getBean(MealRestController.class);
