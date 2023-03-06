@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.model.Meal;
 
+import java.time.LocalDateTime;
+
 @Profile(value = Profiles.POSTGRES_DB)
 @Repository
 public class PostgresJdbcMealRepository extends JdbcMealRepository{
@@ -17,5 +19,10 @@ public class PostgresJdbcMealRepository extends JdbcMealRepository{
     @Override
     public Meal getWithUser(int id, int userId) {
         return null;
+    }
+
+    @Override
+    public LocalDateTime getDateTimeMapping(LocalDateTime localDateTime) {
+        return localDateTime;
     }
 }

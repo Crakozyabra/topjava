@@ -9,6 +9,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Repository
 public class DataJpaMealRepository implements MealRepository {
@@ -25,11 +26,21 @@ public class DataJpaMealRepository implements MealRepository {
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {
-        if (!meal.isNew() && crudRepository.getReferenceById(meal.getId()).getUser().getId() != userId) {
+        if (meal.isNew()) {
+            Optional<User> optionalUser = crudUserRepository.findById(userId);
+            User user = optionalUser.filter(u -> u.getId() == userId).orElse(null);
+            if (user == null) {
+                return null;
+            }
+            meal.setUser(user);
+            return crudRepository.save(meal);
+        }
+
+        Meal mealWithUser = crudRepository.getWithUser(meal.getId(), userId);
+        if (Objects.isNull(mealWithUser)) {
             return null;
         }
-        User user = crudUserRepository.getReferenceById(userId);
-        meal.setUser(user);
+        meal.setUser(mealWithUser.getUser());
         return crudRepository.save(meal);
     }
 
@@ -39,13 +50,14 @@ public class DataJpaMealRepository implements MealRepository {
     }
 
     @Override
-    @Transactional
     public Meal get(int id, int userId) {
-        Meal meal = crudRepository.findById(id).filter(Objects::nonNull).orElse(null);
-        if (meal != null) {
-            if (meal.getUser().getId() != userId) {
-                return null;
-            }
+        Optional<Meal> optionalMeal = crudRepository.findById(id);
+        if (optionalMeal.isEmpty()) {
+            return null;
+        }
+        Meal meal = optionalMeal.get();
+        if (meal.getUser().getId() != userId) {
+            return null;
         }
         return meal;
     }
@@ -62,7 +74,6 @@ public class DataJpaMealRepository implements MealRepository {
 
     @Override
     public Meal getWithUser(int id, int userId) {
-        Meal meal = crudRepository.findMealByIdAndUserId(id, userId);
-        return meal;
+        return crudRepository.getWithUser(id, userId);
     }
 }
