@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.Profiles;
-import ru.javawebinar.topjava.model.Meal;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -21,10 +20,5 @@ public class HsqldbJdbcMealRepository extends JdbcMealRepository {
     @Override
     public Timestamp getDateTimeMapping(LocalDateTime localDateTime) {
         return Timestamp.valueOf(localDateTime);
-    }
-
-    @Override
-    public Meal getWithUser(int id, int userId) {
-        return null;
     }
 }
