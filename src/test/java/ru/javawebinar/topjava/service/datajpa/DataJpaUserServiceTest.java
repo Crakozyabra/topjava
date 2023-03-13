@@ -11,9 +11,10 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import static ru.javawebinar.topjava.MealTestData.MEAL_MATCHER;
 import static ru.javawebinar.topjava.Profiles.DATAJPA;
+import static ru.javawebinar.topjava.Profiles.SECOND_LEVEL_CACHE_DISABLE;
 import static ru.javawebinar.topjava.UserTestData.*;
 
-@ActiveProfiles(DATAJPA)
+@ActiveProfiles(profiles = {DATAJPA/*, SECOND_LEVEL_CACHE_DISABLE*/})
 public class DataJpaUserServiceTest extends AbstractUserServiceTest {
     @Test
     public void getWithMeals() {

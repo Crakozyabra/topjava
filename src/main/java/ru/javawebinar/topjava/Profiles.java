@@ -14,6 +14,8 @@ public class Profiles {
             POSTGRES_DB = "postgres",
             HSQL_DB = "hsqldb";
 
+    public static final String SECOND_LEVEL_CACHE_DISABLE = "second_level_cache_disable";
+
     //  Get DB profile depending of DB driver in classpath
     public static String getActiveDbProfile() {
         if (ClassUtils.isPresent("org.postgresql.Driver", null)) {

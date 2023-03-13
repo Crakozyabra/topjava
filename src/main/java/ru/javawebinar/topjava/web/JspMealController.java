@@ -2,7 +2,10 @@ package ru.javawebinar.topjava.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import ru.javawebinar.topjava.model.Meal;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,9 +19,10 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 
 @Controller
+@RequestMapping(value = "/meals")
 public class JspMealController extends AbstractMealController {
 
-    @GetMapping("/meals")
+    @GetMapping
     public String getAll(HttpServletRequest request, Model model) {
         LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
         LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
@@ -28,16 +32,16 @@ public class JspMealController extends AbstractMealController {
         return "meals";
     }
 
-    @GetMapping("meals/create")
+    @GetMapping("/create")
     public String getCreateForm(Model model) {
         Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
         model.addAttribute("meal", meal);
         return "mealForm";
     }
 
-    @PostMapping("meals/create")
+    @PostMapping("/create")
     public String createMeal(HttpServletRequest request) throws UnsupportedEncodingException {
-        request.setCharacterEncoding("UTF-8");
+        //request.setCharacterEncoding("UTF-8");
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
@@ -46,15 +50,15 @@ public class JspMealController extends AbstractMealController {
         return "redirect:/meals";
     }
 
-    @GetMapping("meals/update/{id}")
+    @GetMapping("/update/{id}")
     public String getUpdateForm(@PathVariable Integer id, Model model) {
         model.addAttribute(get(id));
         return "mealForm";
     }
 
-    @PostMapping("meals/update/{id}")
+    @PostMapping("/update/{id}")
     public String updateMeal(HttpServletRequest request, @PathVariable Integer id) throws UnsupportedEncodingException {
-        request.setCharacterEncoding("UTF-8");
+        //request.setCharacterEncoding("UTF-8");
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
@@ -63,7 +67,7 @@ public class JspMealController extends AbstractMealController {
         return "redirect:/meals";
     }
 
-    @GetMapping("meals/delete/{id}")
+    @GetMapping("/delete/{id}")
     public String deleteMeal(@PathVariable Integer id) {
         delete(id);
         return "redirect:/meals";
