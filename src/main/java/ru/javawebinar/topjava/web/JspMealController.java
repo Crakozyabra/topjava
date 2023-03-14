@@ -23,7 +23,13 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 public class JspMealController extends AbstractMealController {
 
     @GetMapping
-    public String getAll(HttpServletRequest request, Model model) {
+    public String getAll(Model model) {
+        model.addAttribute("meals", getAll());
+        return "meals";
+    }
+
+    @GetMapping("/filter")
+    public String getBetween(HttpServletRequest request, Model model) {
         LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
         LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
         LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
@@ -41,7 +47,6 @@ public class JspMealController extends AbstractMealController {
 
     @PostMapping("/create")
     public String createMeal(HttpServletRequest request) throws UnsupportedEncodingException {
-        //request.setCharacterEncoding("UTF-8");
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
@@ -58,7 +63,6 @@ public class JspMealController extends AbstractMealController {
 
     @PostMapping("/update/{id}")
     public String updateMeal(HttpServletRequest request, @PathVariable Integer id) throws UnsupportedEncodingException {
-        //request.setCharacterEncoding("UTF-8");
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),

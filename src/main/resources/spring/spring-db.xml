@@ -144,6 +144,6 @@
             <property name="location" value="classpath:cache/beanOverride.properties"/>
         </bean>
 
-        <bean id="noOpCacheManager" class="org.springframework.cache.support.NoOpCacheManager"/>
+        <bean id="noOpCacheManager" class="org.springframework.cache.support.NoOpCacheManager" primary="true"/>
     </beans>
 </beans>

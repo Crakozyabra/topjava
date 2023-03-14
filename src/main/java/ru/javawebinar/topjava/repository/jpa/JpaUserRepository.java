@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.repository.jpa;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +11,7 @@ import ru.javawebinar.topjava.repository.UserRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 @Transactional(readOnly = true)
@@ -22,6 +25,7 @@ public class JpaUserRepository implements UserRepository {
         return sessionFactory.getCurrentSession();
     }
 */
+    private final static Logger logger = LoggerFactory.getLogger(JpaUserRepository.class);
 
     @PersistenceContext
     private EntityManager em;
@@ -62,7 +66,8 @@ public class JpaUserRepository implements UserRepository {
         List<User> users = em.createNamedQuery(User.BY_EMAIL, User.class)
                 .setParameter(1, email)
                 .getResultList();
-        users.forEach(System.out::println);
+        logger.info("Double result query in the jpa, without DISTINCT in named query and test crashed:\n {}",
+                users.stream().map(User::toString).collect(Collectors.joining("\n")));
         return DataAccessUtils.singleResult(users);
     }
 

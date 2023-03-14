@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ParameterizedPreparedStatementSetter;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.util.ConstraintViolationValidator;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,20 +35,24 @@ public class JdbcUserRepository implements UserRepository {
 
     private final SimpleJdbcInsert insertUser;
 
+    private final ConstraintViolationValidator constraintViolationValidator;
+
     @Autowired
-    public JdbcUserRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public JdbcUserRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate,
+                              ConstraintViolationValidator constraintViolationValidator) {
         this.insertUser = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
 
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+        this.constraintViolationValidator = constraintViolationValidator;
     }
 
     @Override
     @Transactional
     public User save(User user) {
-        new ConstraintViolationValidatorForJdbc<User>().validate(user);
+        constraintViolationValidator.validate(user);
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
@@ -82,24 +88,22 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public User get(int id) {
-        Map<String, Integer> map = new HashMap<>() {{
-            put("id", id);
-        }};
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+        mapSqlParameterSource.addValue("id", id);
         CustomUsersWithRolesRowCallbackHandler customUsersWithRolesRowCallbackHandler = new CustomUsersWithRolesRowCallbackHandler();
         namedParameterJdbcTemplate.query("SELECT * FROM users LEFT JOIN user_role ur ON users.id = ur.user_id WHERE id=:id",
-                map, customUsersWithRolesRowCallbackHandler);
+                mapSqlParameterSource, customUsersWithRolesRowCallbackHandler);
         return DataAccessUtils.singleResult(customUsersWithRolesRowCallbackHandler.getUsersWithRoles());
     }
 
     @Override
     public User getByEmail(String email) {
 //        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
-        Map<String, String> map = new HashMap<>() {{
-            put("email", email);
-        }};
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+        mapSqlParameterSource.addValue("email", email);
         CustomUsersWithRolesRowCallbackHandler customUsersWithRolesRowCallbackHandler = new CustomUsersWithRolesRowCallbackHandler();
         namedParameterJdbcTemplate.query("SELECT * FROM users LEFT JOIN user_role ur ON users.id = ur.user_id WHERE email=:email",
-                map, customUsersWithRolesRowCallbackHandler);
+                mapSqlParameterSource, customUsersWithRolesRowCallbackHandler);
         return DataAccessUtils.singleResult(customUsersWithRolesRowCallbackHandler.getUsersWithRoles());
     }
 
@@ -120,13 +124,15 @@ public class JdbcUserRepository implements UserRepository {
             do {
                 User user = new User();
                 Integer userId = rs.getInt("id");
-                user.setId(userId);
-                user.setName(rs.getString("name"));
-                user.setEmail(rs.getString("email"));
-                user.setPassword(rs.getString("password"));
-                user.setRegistered(rs.getDate("registered"));
-                user.setEnabled(rs.getBoolean("enabled"));
-                user.setCaloriesPerDay(rs.getInt("calories_per_day"));
+                if (!users.containsKey(userId)) {
+                    user.setId(userId);
+                    user.setName(rs.getString("name"));
+                    user.setEmail(rs.getString("email"));
+                    user.setPassword(rs.getString("password"));
+                    user.setRegistered(rs.getDate("registered"));
+                    user.setEnabled(rs.getBoolean("enabled"));
+                    user.setCaloriesPerDay(rs.getInt("calories_per_day"));
+                }
                 String role = rs.getString("role");
                 user.setRoles(new HashSet<>());
                 if (Objects.nonNull(role)) {
@@ -143,13 +149,8 @@ public class JdbcUserRepository implements UserRepository {
             return users
                     .values()
                     .stream()
-                    .sorted((user1, user2) -> {
-                        int nameCompare = user1.getName().compareTo(user2.getName());
-                        if (nameCompare == 0) {
-                            return nameCompare;
-                        }
-                        return user1.getEmail().compareTo(user2.getEmail());
-                    }).collect(Collectors.toList());
+                    .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
+                    .collect(Collectors.toList());
         }
     }
 }

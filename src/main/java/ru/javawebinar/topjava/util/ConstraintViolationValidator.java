@@ -1,13 +1,13 @@
-package ru.javawebinar.topjava.repository.jdbc;
+package ru.javawebinar.topjava.util;
 
 import javax.validation.*;
 import java.util.Set;
 
-public class ConstraintViolationValidatorForJdbc<T> {
+public class ConstraintViolationValidator {
 
-    private final static ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+    private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 
-    public void validate(T t) {
+    public <T> void validate(T t) {
         Validator validator = validatorFactory.getValidator();
         Set<ConstraintViolation<T>> violations = validator.validate(t);
         if (!violations.isEmpty()) {

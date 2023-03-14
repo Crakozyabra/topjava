@@ -5,6 +5,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
@@ -13,6 +14,7 @@ import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
+import javax.persistence.EntityManagerFactory;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
@@ -28,18 +30,11 @@ public class SpringMain {
         // java 7 automatic resource management (ARM)
         GenericXmlApplicationContext ctx = new GenericXmlApplicationContext();
         ConfigurableEnvironment env = ctx.getEnvironment();
-        env.setActiveProfiles("postgres", "jdbc");
-        ctx.load("spring/spring-db.xml");
+        env.setActiveProfiles(Profiles.POSTGRES_DB, Profiles.JPA, Profiles.SECOND_LEVEL_CACHE_DISABLE);
+        ctx.load("spring/spring-db.xml", "spring/spring-app.xml");
         ctx.refresh();
         List.of(ctx.getBeanDefinitionNames()).forEach(System.out::println);
-        UserRepository userRepository = ctx.getBean(UserRepository.class);
-        //userRepository.getAll().forEach(System.out::println);
-        //System.out.println(userRepository.getByEmail(UserTestData.admin.getEmail()));
-        //System.out.println(userRepository.get(UserTestData.USER_ID));
-        User user = UserTestData.getNew();
-        Set<Role> roles = Set.of(Role.USER, Role.ADMIN);
-        user.setRoles(roles);
-        userRepository.save(user);
+        //LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean = (LocalContainerEntityManagerFactoryBean) ctx.getBean("entityManagerFactory");
         ctx.close();
 
         /*
@@ -60,6 +55,5 @@ public class SpringMain {
             List.of(appCtx.getBeanDefinitionNames()).forEach(System.out::println);
         }
         */
-
     }
 }

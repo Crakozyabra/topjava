@@ -4,17 +4,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.MealTestData;
+import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.AbstractUserServiceTest;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import static ru.javawebinar.topjava.MealTestData.MEAL_MATCHER;
-import static ru.javawebinar.topjava.Profiles.DATAJPA;
-import static ru.javawebinar.topjava.Profiles.SECOND_LEVEL_CACHE_DISABLE;
 import static ru.javawebinar.topjava.UserTestData.*;
 
-@ActiveProfiles(profiles = {DATAJPA/*, SECOND_LEVEL_CACHE_DISABLE*/})
+@ActiveProfiles(profiles = {Profiles.DATAJPA, Profiles.SECOND_LEVEL_CACHE_DISABLE})
 public class DataJpaUserServiceTest extends AbstractUserServiceTest {
     @Test
     public void getWithMeals() {
