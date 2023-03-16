@@ -6,8 +6,6 @@
     <body>
         <jsp:include page="fragments/bodyHeader.jsp"/>
         <section>
-            <h3><a href="index.html">Home</a></h3>
-            <hr>
             <h2>${meal.id eq null ? 'Create meal' : 'Edit meal'}</h2>
             <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
             <form method="post" action="${pageContext.request.contextPath}${meal.id eq null ? '/meals/create' : '/meals/update/'}${meal.id}">
