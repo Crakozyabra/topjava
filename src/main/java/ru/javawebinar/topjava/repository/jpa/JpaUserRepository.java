@@ -66,8 +66,6 @@ public class JpaUserRepository implements UserRepository {
         List<User> users = em.createNamedQuery(User.BY_EMAIL, User.class)
                 .setParameter(1, email)
                 .getResultList();
-        logger.info("Double result query in the jpa, without DISTINCT in named query and test crashed:\n {}",
-                users.stream().map(User::toString).collect(Collectors.joining("\n")));
         return DataAccessUtils.singleResult(users);
     }
 

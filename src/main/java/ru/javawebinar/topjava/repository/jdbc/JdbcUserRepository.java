@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ParameterizedPreparedStatementSetter;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -17,11 +16,9 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.util.ConstraintViolationValidator;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Repository
 @Transactional(readOnly = true)
@@ -69,12 +66,9 @@ public class JdbcUserRepository implements UserRepository {
         jdbcTemplate.batchUpdate("INSERT INTO user_role(user_id, role) VALUES(?, ?)",
                 user.getRoles(),
                 user.getRoles().size(),
-                new ParameterizedPreparedStatementSetter<Role>() {
-                    @Override
-                    public void setValues(PreparedStatement ps, Role argument) throws SQLException {
-                        ps.setInt(1, user.getId());
-                        ps.setString(2, argument.name());
-                    }
+                (ps, argument) -> {
+                    ps.setInt(1, user.getId());
+                    ps.setString(2, argument.name());
                 }
         );
         return user;
@@ -88,8 +82,7 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public User get(int id) {
-        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-        mapSqlParameterSource.addValue("id", id);
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource().addValue("id", id);
         CustomUsersWithRolesRowCallbackHandler customUsersWithRolesRowCallbackHandler = new CustomUsersWithRolesRowCallbackHandler();
         namedParameterJdbcTemplate.query("SELECT * FROM users LEFT JOIN user_role ur ON users.id = ur.user_id WHERE id=:id",
                 mapSqlParameterSource, customUsersWithRolesRowCallbackHandler);
@@ -99,8 +92,7 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public User getByEmail(String email) {
 //        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
-        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-        mapSqlParameterSource.addValue("email", email);
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource().addValue("email", email);
         CustomUsersWithRolesRowCallbackHandler customUsersWithRolesRowCallbackHandler = new CustomUsersWithRolesRowCallbackHandler();
         namedParameterJdbcTemplate.query("SELECT * FROM users LEFT JOIN user_role ur ON users.id = ur.user_id WHERE email=:email",
                 mapSqlParameterSource, customUsersWithRolesRowCallbackHandler);
@@ -110,21 +102,23 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         CustomUsersWithRolesRowCallbackHandler customUsersWithRolesRowCallbackHandler = new CustomUsersWithRolesRowCallbackHandler();
-        jdbcTemplate.query("SELECT * FROM users LEFT JOIN user_role ur ON users.id = ur.user_id",
+        jdbcTemplate.query("SELECT * FROM users LEFT JOIN user_role ur ON users.id = ur.user_id ORDER BY name, email",
                 customUsersWithRolesRowCallbackHandler);
         return customUsersWithRolesRowCallbackHandler.getUsersWithRoles();
     }
 
     private static class CustomUsersWithRolesRowCallbackHandler implements RowCallbackHandler {
 
-        private final Map<Integer, User> users = new HashMap<>();
+        private final Map<Integer, User> users = new LinkedHashMap<>();
 
         @Override
         public void processRow(ResultSet rs) throws SQLException {
             do {
-                User user = new User();
+                User user = null;
                 Integer userId = rs.getInt("id");
+                String role = rs.getString("role");
                 if (!users.containsKey(userId)) {
+                    user = new User();
                     user.setId(userId);
                     user.setName(rs.getString("name"));
                     user.setEmail(rs.getString("email"));
@@ -132,25 +126,22 @@ public class JdbcUserRepository implements UserRepository {
                     user.setRegistered(rs.getDate("registered"));
                     user.setEnabled(rs.getBoolean("enabled"));
                     user.setCaloriesPerDay(rs.getInt("calories_per_day"));
+                    user.setRoles(EnumSet.noneOf(Role.class));
+                    if (Objects.nonNull(role)) {
+                        user.getRoles().add(Role.valueOf(role));
+                    }
+                } else {
+                    if (Objects.nonNull(role)) {
+                        user = users.get(userId);
+                        user.getRoles().add(Role.valueOf(role));
+                    }
                 }
-                String role = rs.getString("role");
-                user.setRoles(new HashSet<>());
-                if (Objects.nonNull(role)) {
-                    user.getRoles().add(Role.valueOf(role));
-                }
-                users.merge(userId, user, (oldUser, newUser) -> {
-                    oldUser.getRoles().addAll(newUser.getRoles());
-                    return oldUser;
-                });
+                users.put(userId, user);
             } while (rs.next());
         }
 
         public List<User> getUsersWithRoles() {
-            return users
-                    .values()
-                    .stream()
-                    .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
-                    .collect(Collectors.toList());
+            return new ArrayList<>(users.values());
         }
     }
 }

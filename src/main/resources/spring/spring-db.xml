@@ -87,6 +87,8 @@
         <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
             <property name="dataSource" ref="dataSource"/>
         </bean>
+
+        <bean class="ru.javawebinar.topjava.util.ConstraintViolationValidator"/>
     </beans>
 
     <beans profile="jpa,datajpa">
@@ -139,7 +141,7 @@
         <jpa:repositories base-package="ru.javawebinar.**.repository.datajpa"/>
     </beans>
 
-    <beans profile="second_level_cache_disable">
+    <beans profile="test">
         <bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
             <property name="location" value="classpath:cache/beanOverride.properties"/>
         </bean>

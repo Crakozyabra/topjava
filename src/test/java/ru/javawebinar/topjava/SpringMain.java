@@ -30,7 +30,7 @@ public class SpringMain {
         // java 7 automatic resource management (ARM)
         GenericXmlApplicationContext ctx = new GenericXmlApplicationContext();
         ConfigurableEnvironment env = ctx.getEnvironment();
-        env.setActiveProfiles(Profiles.POSTGRES_DB, Profiles.JPA, Profiles.SECOND_LEVEL_CACHE_DISABLE);
+        env.setActiveProfiles(Profiles.POSTGRES_DB, Profiles.JPA, Profiles.TEST);
         ctx.load("spring/spring-db.xml", "spring/spring-app.xml");
         ctx.refresh();
         List.of(ctx.getBeanDefinitionNames()).forEach(System.out::println);
