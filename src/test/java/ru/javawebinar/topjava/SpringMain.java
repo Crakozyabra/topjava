@@ -31,7 +31,7 @@ public class SpringMain {
         GenericXmlApplicationContext ctx = new GenericXmlApplicationContext();
         ConfigurableEnvironment env = ctx.getEnvironment();
         env.setActiveProfiles(Profiles.POSTGRES_DB, Profiles.JPA, Profiles.TEST);
-        ctx.load("spring/spring-db.xml", "spring/spring-app.xml");
+        ctx.load("spring/spring-db.xml", "spring/spring-app.xml", "spring/disable-cache-l2.xml");
         ctx.refresh();
         List.of(ctx.getBeanDefinitionNames()).forEach(System.out::println);
         //LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean = (LocalContainerEntityManagerFactoryBean) ctx.getBean("entityManagerFactory");

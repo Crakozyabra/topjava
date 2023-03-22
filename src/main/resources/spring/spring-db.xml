@@ -140,12 +140,4 @@
         <context:component-scan base-package="ru.javawebinar.**.repository.datajpa"/>
         <jpa:repositories base-package="ru.javawebinar.**.repository.datajpa"/>
     </beans>
-
-    <beans profile="test">
-        <bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
-            <property name="location" value="classpath:cache/beanOverride.properties"/>
-        </bean>
-
-        <bean id="noOpCacheManager" class="org.springframework.cache.support.NoOpCacheManager" primary="true"/>
-    </beans>
 </beans>
