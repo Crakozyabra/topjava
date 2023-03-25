@@ -1,4 +1,4 @@
-Curl commands for testing MealRestController methods. For new row use "\":
+Curl commands for testing MealRestController methods. For new row use "/\":
 
 1. Meal create(Meal)
 
