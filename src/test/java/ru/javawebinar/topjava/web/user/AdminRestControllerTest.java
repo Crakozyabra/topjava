@@ -94,7 +94,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
     @Test
     void getWithMeals() throws Exception {
         Assumptions.assumeTrue(List.of(environment.getActiveProfiles()).contains(Profiles.DATAJPA));
-        ResultActions actions = perform(MockMvcRequestBuilders.get(REST_URL + WITH_MEALS + "/" + USER_ID))
+        ResultActions actions = perform(MockMvcRequestBuilders.get(REST_URL + USER_ID + "/" + WITH_MEALS))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_MATCHER.contentJson(user));
