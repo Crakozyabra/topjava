@@ -1,4 +1,4 @@
-Curl commands for testing MealRestController methods. For new row use U+0005C:
+Curl commands for testing MealRestController methods. For new row use backslash:
 
 1. Meal create(Meal)
 
