@@ -8,15 +8,15 @@ import java.util.Locale;
 
 public class LocalTimeFormatter implements Formatter<LocalTime> {
 
-    private static final String LOCAL_TIME_PATTERN = "HH:mm:ss";
+    private static final DateTimeFormatter LOCAL_TIME_PATTERN = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     @Override
     public LocalTime parse(String text, Locale locale) {
-        return LocalTime.parse(text, DateTimeFormatter.ofPattern(LOCAL_TIME_PATTERN));
+        return LocalTime.parse(text, LOCAL_TIME_PATTERN);
     }
 
     @Override
     public String print(LocalTime localTime, Locale locale) {
-        return localTime.toString();
+        return String.valueOf(localTime);
     }
 }

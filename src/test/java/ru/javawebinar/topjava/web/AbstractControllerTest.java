@@ -15,6 +15,7 @@ import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.Profiles;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 
 @SpringJUnitWebConfig(locations = {
         "classpath:spring/spring-app.xml",
@@ -43,6 +44,10 @@ public abstract class AbstractControllerTest {
 
     @Autowired
     protected Environment environment;
+
+    protected boolean isActiveProfile(String profile) {
+        return List.of(environment.getActiveProfiles()).contains(profile);
+    }
 
     @PostConstruct
     private void postConstruct() {

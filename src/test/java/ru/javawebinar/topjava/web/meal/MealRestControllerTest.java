@@ -88,6 +88,4 @@ public class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MEAL_TO_MATCHER.contentJson(mealsToBetween));
     }
-
-
 }

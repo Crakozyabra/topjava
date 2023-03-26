@@ -8,15 +8,15 @@ import java.util.Locale;
 
 public class LocalDateFormatter implements Formatter<LocalDate> {
 
-    private static final String LOCAL_DATE_PATTERN = "yyyy-MM-dd";
+    private static final DateTimeFormatter LOCAL_DATE_PATTERN = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Override
     public LocalDate parse(String text, Locale locale) {
-        return LocalDate.parse(text, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return LocalDate.parse(text, LOCAL_DATE_PATTERN);
     }
 
     @Override
     public String print(LocalDate localDate, Locale locale) {
-        return localDate.toString();
+        return String.valueOf(localDate);
     }
 }
