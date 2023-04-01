@@ -5,6 +5,7 @@ import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -96,6 +97,17 @@ public class JdbcUserRepository implements UserRepository {
         });
         users.forEach(u -> u.setRoles(map.get(u.getId())));
         return users;
+    }
+
+    @Transactional
+    @Override
+    public boolean enable(int id, boolean enabled) {
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
+                .addValue("id", id)
+                .addValue("enabled", enabled);
+        namedParameterJdbcTemplate.update("UPDATE users SET enabled=:enabled WHERE id=:id", mapSqlParameterSource);
+        User user = get(id);
+        return Objects.isNull(user) ? false : user.isEnabled();
     }
 
     private void insertRoles(User u) {
