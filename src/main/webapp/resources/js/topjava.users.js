@@ -55,6 +55,8 @@ $(function () {
             type: "PATCH"
         }).done(function (data) {
             data ? currentRow.removeClass("text-muted") : currentRow.addClass("text-muted");
+        }).fail(function (jqXHR, textStatus) {
+            currentRow.find("input[type=checkbox]").prop("checked", !checked);
         });
     });
 });

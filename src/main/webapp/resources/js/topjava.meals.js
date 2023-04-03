@@ -36,7 +36,7 @@ $(function () {
             "order": [
                 [
                     0,
-                    "desk"
+                    "desc"
                 ]
             ]
         })
