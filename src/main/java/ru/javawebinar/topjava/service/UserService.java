@@ -60,7 +60,7 @@ public class UserService {
 
     public boolean enable(int id, boolean enabled) {
         Boolean enableState = repository.enable(id, enabled);
-        ValidationUtil.checkNotFound(Objects.nonNull(enableState), "id=" + id);
+        ValidationUtil.checkNotFound(enableState, "id=" + id);
         return enableState;
     }
 }

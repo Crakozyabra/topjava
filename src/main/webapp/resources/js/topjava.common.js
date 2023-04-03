@@ -40,7 +40,6 @@ function updateTable() {
     $.get(ctx.ajaxUrl, function (data) {
         redrawTable(data);
     });
-    $("#filterForm").find(":input").val("");
 }
 
 function save() {

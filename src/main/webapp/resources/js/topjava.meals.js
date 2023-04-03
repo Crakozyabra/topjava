@@ -53,3 +53,7 @@ function filterTable() {
     });
 }
 
+$("#cleanFormButton").click(function () {
+    $("#filterForm").find(":input").val("");
+});
+

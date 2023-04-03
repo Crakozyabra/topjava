@@ -47,6 +47,7 @@ $(function () {
 
     $(".checkbox-event").change(function () {
         let currentRow = $(this).closest('tr');
+        let checkbox = currentRow.find("input[type=checkbox]");
         let userId = currentRow.attr("id");
         let checked = this.checked;
         let urlEnable = ctx.ajaxUrl + userId + "/enable?enabled=" + checked;
@@ -56,7 +57,7 @@ $(function () {
         }).done(function (data) {
             data ? currentRow.removeClass("text-muted") : currentRow.addClass("text-muted");
         }).fail(function (jqXHR, textStatus) {
-            currentRow.find("input[type=checkbox]").prop("checked", !checked);
+            checkbox.prop("checked", !checked);
         });
     });
 });

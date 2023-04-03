@@ -48,7 +48,7 @@
                         <spring:message code="meal.filter"/>
                     </button>
 
-                    <button type="button" class="btn btn-primary" onclick="updateTable()">
+                    <button id="cleanFormButton" type="button" class="btn btn-primary" onclick="updateTable()">
                         <span class="fa fa-refresh"></span>
                         <spring:message code="meal.resetFilter"/>
                     </button>
