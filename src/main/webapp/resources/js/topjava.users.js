@@ -45,19 +45,13 @@ $(function () {
         })
     );
 
-    $("#datatable").on('draw.dt', function (e, settings) {
-        console.log(e);
-        console.log(settings);
-    })
-
     $(".checkbox-event").change(function () {
         let currentRow = $(this).closest('tr');
         let userId = currentRow.attr("id");
-        let urlEnable = "rest/" + ctx.ajaxUrl + "enable";
         let checked = this.checked;
-        let dataForPatch = "?id=" + userId + "&enabled=" + checked;
+        let urlEnable = ctx.ajaxUrl + userId + "/enable?enabled=" + checked;
         $.ajax({
-            url: urlEnable + dataForPatch,
+            url: urlEnable,
             type: "PATCH"
         }).done(function (data) {
             data ? currentRow.removeClass("text-muted") : currentRow.addClass("text-muted");

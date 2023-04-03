@@ -1,6 +1,6 @@
 const userAjaxUrl = "user/meals/";
 
-const mealFilterAjaxUrl = userAjaxUrl + "filter/";
+const mealFilterAjaxUrl = userAjaxUrl + "filter";
 
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
@@ -36,30 +36,18 @@ $(function () {
             "order": [
                 [
                     0,
-                    "asc"
+                    "desk"
                 ]
             ]
         })
     );
 });
 
-function redrawTable(data) {
-    ctx.datatableApi.clear().rows.add(data).draw();
-}
-
 function filterTable() {
     let filterForm = $('#filterForm')
     $.get({
         url: ctx.filterAjaxUrl,
         data: filterForm.serialize()
-    }).done(function (data) {
-        redrawTable(data)
-    });
-}
-
-function resetFilterTable() {
-    $.get({
-        url: ctx.ajaxUrl,
     }).done(function (data) {
         redrawTable(data)
     });

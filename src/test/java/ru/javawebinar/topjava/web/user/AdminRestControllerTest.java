@@ -99,7 +99,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
     @Test
     void enable() throws Exception {
-        String URL = REST_URL + "enable?id=" + USER_ID + "&enabled=false";
+        String URL = REST_URL + USER_ID + "/enable?enabled=false";
         ResultActions resultActions = perform(MockMvcRequestBuilders.patch(URL))
                 .andExpect(status().isOk())
                 .andDo(print())

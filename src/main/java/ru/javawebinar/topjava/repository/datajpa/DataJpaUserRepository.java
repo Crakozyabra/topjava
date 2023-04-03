@@ -2,13 +2,10 @@ package ru.javawebinar.topjava.repository.datajpa;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Repository
 public class DataJpaUserRepository implements UserRepository {
@@ -51,10 +48,8 @@ public class DataJpaUserRepository implements UserRepository {
     }
 
     @Override
-    @Transactional
-    public boolean enable(int id, boolean enabled) {
-        crudRepository.enable(id, enabled);
-        User user = crudRepository.findById(id).orElse(null);
-        return !Objects.isNull(user) && user.isEnabled();
+    public Boolean enable(int id, boolean enabled) {
+        int quantityOfModifiedRow = crudRepository.enable(id, enabled);
+        return quantityOfModifiedRow == 1 ? enabled : null;
     }
 }

@@ -48,7 +48,7 @@
                         <spring:message code="meal.filter"/>
                     </button>
 
-                    <button type="button" class="btn btn-primary" onclick="resetFilterTable()">
+                    <button type="button" class="btn btn-primary" onclick="updateTable()">
                         <span class="fa fa-refresh"></span>
                         <spring:message code="meal.resetFilter"/>
                     </button>
@@ -84,7 +84,7 @@
                             </td>
                             <td>${meal.description}</td>
                             <td>${meal.calories}</td>
-                            <td><a href="meals/update?id=${meal.id}"><span class="fa fa-pencil"></span></a></td>
+                            <td><a><span class="fa fa-pencil"></span></a></td>
                             <td><a class="delete"><span class="fa fa-remove"></span></a></td>
                         </tr>
                     </c:forEach>

@@ -101,13 +101,13 @@ public class JdbcUserRepository implements UserRepository {
 
     @Transactional
     @Override
-    public boolean enable(int id, boolean enabled) {
+    public Boolean enable(int id, boolean enabled) {
         MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
                 .addValue("id", id)
                 .addValue("enabled", enabled);
-        namedParameterJdbcTemplate.update("UPDATE users SET enabled=:enabled WHERE id=:id", mapSqlParameterSource);
-        User user = get(id);
-        return Objects.isNull(user) ? false : user.isEnabled();
+        int quantityOfModifiedRow = namedParameterJdbcTemplate.update("UPDATE users SET enabled=:enabled WHERE id=:id",
+                mapSqlParameterSource);
+        return quantityOfModifiedRow == 1 ? enabled : null;
     }
 
     private void insertRoles(User u) {

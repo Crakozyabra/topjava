@@ -30,6 +30,15 @@ public class InMemoryUserRepository extends InMemoryBaseRepository<User> impleme
     }
 
     @Override
+    public Boolean enable(int id, boolean enabled) {
+        User changed = map.computeIfPresent(id, (key, oldValue) -> {
+            oldValue.setEnabled(enabled);
+            return oldValue;
+        });
+        return Objects.isNull(changed) ? null : changed.isEnabled();
+    }
+
+    @Override
     public User getByEmail(String email) {
         Objects.requireNonNull(email, "email must not be null");
         return getCollection().stream()
