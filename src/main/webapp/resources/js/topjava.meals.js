@@ -18,6 +18,37 @@ function clearFilter() {
 }
 
 $(function () {
+    $('#startDate').datetimepicker({
+        timepicker: false,
+        format: 'Y-m-d'
+    });
+
+    $('#endDate').datetimepicker({
+        timepicker: false,
+        format: 'Y-m-d'
+    });
+
+    jQuery('#startTime').datetimepicker({
+        datepicker: false,
+        format: 'H:i'
+    });
+
+    $('#endTime').datetimepicker({
+        datepicker: false,
+        format: 'H:i'
+    });
+
+   /*
+    $('#dateTime').datetimepicker({
+        format: 'Y-m-d H:i'
+    });
+
+    $('#editRow').on('show.bs.modal', function (e) {
+        let dateTimeElem = $('#dateTime');
+        let dateTimeValue = dateTimeElem.val();
+        dateTimeElem.val(dateTimeValue.replace("T", " "));
+    });*/
+
     makeEditable(
         $("#datatable").DataTable({
             "ajax": {
@@ -31,7 +62,6 @@ $(function () {
                     "data": "dateTime",
                     "render": function (data, type, row) {
                         if (type === "display") {
-                            console.log(row);
                             return data.replace("T", " ");
                         }
                         return data;
