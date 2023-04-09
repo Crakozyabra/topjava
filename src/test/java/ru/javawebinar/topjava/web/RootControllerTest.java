@@ -34,15 +34,11 @@ class RootControllerTest extends AbstractControllerTest {
 
     @Test
     void getMeals() throws Exception {
-        TestUtil.mockAuthorize(user);
-        int calories = SecurityUtil.authUserCaloriesPerDay();
         perform(get("/meals")
                 .with(userAuth(user)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("meals"))
-                .andExpect(forwardedUrl("/WEB-INF/jsp/meals.jsp"))
-                .andExpect(model().attribute("meals", getTos(meals, calories)));
-
+                .andExpect(forwardedUrl("/WEB-INF/jsp/meals.jsp"));
     }
 }

@@ -9,7 +9,10 @@
 <script src="resources/js/topjava.common.js" defer></script>
 <script src="resources/js/topjava.users.js" defer></script>
 <jsp:include page="fragments/bodyHeader.jsp"/>
-
+<jsp:include page="fragments/i18n.jsp">
+    <jsp:param name="add" value="user.add"/>
+    <jsp:param name="edit" value="user.edit"/>
+</jsp:include>
 <div class="jumbotron pt-4">
     <div class="container">
         <h3 class="text-center"><spring:message code="user.title"/></h3>
@@ -76,11 +79,6 @@
         </div>
     </div>
 </div>
-<script>
-    const i18n = [];
-    i18n["addTitle"] = '<spring:message code="user.add"/>';
-    i18n["editTitle"] = '<spring:message code="user.edit"/>';
-</script>
 <jsp:include page="fragments/footer.jsp"/>
 </body>
 </html>

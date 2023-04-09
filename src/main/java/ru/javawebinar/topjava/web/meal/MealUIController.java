@@ -8,17 +8,17 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.web.UiController;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 @RestController
 @RequestMapping(value = "/profile/meals", produces = MediaType.APPLICATION_JSON_VALUE)
-public class MealUIController extends AbstractMealController {
+public class MealUIController extends AbstractMealController implements UiController {
 
     @Override
     @GetMapping
@@ -34,19 +34,15 @@ public class MealUIController extends AbstractMealController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<String> createOrUpdate(@Valid MealTo mealTo, BindingResult result) {
-        if (result.hasErrors()) {
-            result.getFieldErrors().forEach(System.out::println);
-            String errorFieldsMsg = result.getFieldErrors().stream()
-                    .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
-                    .collect(Collectors.joining("<br>"));
-            return ResponseEntity.unprocessableEntity().body(errorFieldsMsg);
+    public ResponseEntity<String> createOrUpdate(@Valid Meal meal, BindingResult result) {
+        ResponseEntity<String> response = bindError(result);
+        if (Objects.nonNull(response)) {
+            return response;
         }
-        if (mealTo.isNew()) {
-            super.create(MealsUtil.createMealFromTo(mealTo));
+        if (meal.isNew()) {
+            super.create(meal);
         } else {
-            super.update(MealsUtil.createMealFromTo(mealTo), mealTo.getId());
+            super.update(meal, meal.getId());
         }
         return ResponseEntity.ok().build();
     }
@@ -62,5 +58,7 @@ public class MealUIController extends AbstractMealController {
     }
 
     @GetMapping("/{id}")
-    public Meal get(@PathVariable int id) { return super.get(id); }
+    public Meal get(@PathVariable int id) {
+        return super.get(id);
+    }
 }

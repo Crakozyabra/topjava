@@ -8,7 +8,10 @@
 <script type="text/javascript" src="resources/js/topjava.common.js" defer></script>
 <script type="text/javascript" src="resources/js/topjava.meals.js" defer></script>
 <jsp:include page="fragments/bodyHeader.jsp"/>
-
+<jsp:include page="fragments/i18n.jsp">
+    <jsp:param name="add" value="meal.add"/>
+    <jsp:param name="edit" value="meal.edit"/>
+</jsp:include>
 <div class="jumbotron pt-4">
     <div class="container">
         <h3 class="text-center"><spring:message code="meal.title"/></h3>
@@ -64,7 +67,7 @@
             </thead>
             <c:forEach items="${requestScope.meals}" var="meal">
                 <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
-                <tr data-meal-excess="${meal.excess}">
+                <tr data-meal-excess="${meal.isExcess()}">
                     <td>
                             <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
                             <%--<%=TimeUtil.toString(meal.getDateTime())%>--%>
@@ -85,7 +88,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="modalTitle"><spring:message code="meal.add"/></h4>
+                <h4 class="modal-title" id="modalTitle"></h4>
                 <button type="button" class="close" data-dismiss="modal" onclick="closeNoty()">&times;</button>
             </div>
             <div class="modal-body">
@@ -94,7 +97,7 @@
 
                     <div class="form-group">
                         <label for="dateTime" class="col-form-label"><spring:message code="meal.dateTime"/></label>
-                        <input type="datetime-local" class="form-control" id="dateTime" name="dateTime"
+                        <input type="text" class="form-control" id="dateTime" name="dateTime"
                                placeholder="<spring:message code="meal.dateTime"/>">
                     </div>
 
@@ -124,11 +127,6 @@
         </div>
     </div>
 </div>
-<script>
-    const i18n = [];
-    i18n["addTitle"] = '<spring:message code="meal.add"/>';
-    i18n["editTitle"] = '<spring:message code="meal.edit"/>';
-</script>
 <jsp:include page="fragments/footer.jsp"/>
 </body>
 </html>

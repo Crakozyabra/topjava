@@ -18,27 +18,51 @@ function clearFilter() {
 }
 
 $(function () {
-    $('#startDate').datetimepicker({
+    let startDate = $('#startDate');
+    let endDate = $('#endDate');
+    let startTime = $('#startTime');
+    let endTime = $('#endTime');
+
+    startDate.datetimepicker({
         timepicker: false,
-        format: 'Y-m-d'
+        format: 'Y-m-d',
+        onShow: function (ct) {
+            this.setOptions({
+                maxDate: endDate.val() ? endDate.val() : false
+            })
+        }
     });
 
-    $('#endDate').datetimepicker({
+    endDate.datetimepicker({
         timepicker: false,
-        format: 'Y-m-d'
+        format: 'Y-m-d',
+        onShow: function (ct) {
+            this.setOptions({
+                minDate: startDate.val() ? startDate.val() : false
+            })
+        }
     });
 
-    jQuery('#startTime').datetimepicker({
+    startTime.datetimepicker({
         datepicker: false,
-        format: 'H:i'
+        format: 'H:i',
+        onShow: function (ct) {
+            this.setOptions({
+                maxTime: endTime.val() ? endTime.val() : false
+            })
+        }
     });
 
-    $('#endTime').datetimepicker({
+    endTime.datetimepicker({
         datepicker: false,
-        format: 'H:i'
+        format: 'H:i',
+        onShow: function (ct) {
+            this.setOptions({
+                minTime: startTime.val() ? startTime.val() : false
+            })
+        }
     });
 
-   /*
     $('#dateTime').datetimepicker({
         format: 'Y-m-d H:i'
     });
@@ -47,7 +71,7 @@ $(function () {
         let dateTimeElem = $('#dateTime');
         let dateTimeValue = dateTimeElem.val();
         dateTimeElem.val(dateTimeValue.replace("T", " "));
-    });*/
+    });
 
     makeEditable(
         $("#datatable").DataTable({
@@ -62,7 +86,7 @@ $(function () {
                     "data": "dateTime",
                     "render": function (data, type, row) {
                         if (type === "display") {
-                            return data.replace("T", " ");
+                            return data.replace("T", " ").substring(0, 16);
                         }
                         return data;
                     }
@@ -91,11 +115,7 @@ $(function () {
                 ]
             ],
             "createdRow": function (row, data, dataIndex) {
-                if (data.excess) {
-                    $(row).attr("data-meal-excess", true);
-                } else {
-                    $(row).attr("data-meal-excess", false);
-                }
+                $(row).attr("data-meal-excess", data.excess);
             }
         })
     );
