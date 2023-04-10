@@ -57,6 +57,7 @@ public class MealUIController extends AbstractMealController {
         return super.getBetween(startDate, startTime, endDate, endTime);
     }
 
+    @Override
     @GetMapping("/{id}")
     public Meal get(@PathVariable int id) {
         return super.get(id);

@@ -68,7 +68,7 @@ $(function () {
     });
 
     function formatDateTime(dateTime) {
-        return dateTime.replace("T", " ");
+        return dateTime.replace("T", " ").substring(0, 16);
     }
 
     $('#editRow').on('show.bs.modal', function (e) {
@@ -90,7 +90,7 @@ $(function () {
                     "data": "dateTime",
                     "render": function (data, type, row) {
                         if (type === "display") {
-                            return formatDateTime(data).substring(0, 16);
+                            return formatDateTime(data);
                         }
                         return data;
                     }
