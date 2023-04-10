@@ -9,8 +9,7 @@
 <script type="text/javascript" src="resources/js/topjava.meals.js" defer></script>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <jsp:include page="fragments/i18n.jsp">
-    <jsp:param name="add" value="meal.add"/>
-    <jsp:param name="edit" value="meal.edit"/>
+    <jsp:param name="source" value="meal"/>
 </jsp:include>
 <div class="jumbotron pt-4">
     <div class="container">
@@ -65,21 +64,6 @@
                 <th></th>
             </tr>
             </thead>
-            <c:forEach items="${requestScope.meals}" var="meal">
-                <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
-                <tr data-meal-excess="${meal.isExcess()}">
-                    <td>
-                            <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
-                            <%--<%=TimeUtil.toString(meal.getDateTime())%>--%>
-                            <%--${fn:replace(meal.dateTime, 'T', ' ')}--%>
-                            ${fn:formatDateTime(meal.dateTime)}
-                    </td>
-                    <td>${meal.description}</td>
-                    <td>${meal.calories}</td>
-                    <td><a><span class="fa fa-pencil"></span></a></td>
-                    <td><a onclick="deleteRow(${meal.id})"><span class="fa fa-remove"></span></a></td>
-                </tr>
-            </c:forEach>
         </table>
     </div>
 </div>

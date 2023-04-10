@@ -8,7 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.web.UiController;
+import ru.javawebinar.topjava.util.ValidationUtil;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -18,7 +18,7 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping(value = "/profile/meals", produces = MediaType.APPLICATION_JSON_VALUE)
-public class MealUIController extends AbstractMealController implements UiController {
+public class MealUIController extends AbstractMealController {
 
     @Override
     @GetMapping
@@ -35,7 +35,7 @@ public class MealUIController extends AbstractMealController implements UiContro
 
     @PostMapping
     public ResponseEntity<String> createOrUpdate(@Valid Meal meal, BindingResult result) {
-        ResponseEntity<String> response = bindError(result);
+        ResponseEntity<String> response = ValidationUtil.bindError(result);
         if (Objects.nonNull(response)) {
             return response;
         }

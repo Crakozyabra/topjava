@@ -67,10 +67,14 @@ $(function () {
         format: 'Y-m-d H:i'
     });
 
+    function formatDateTime(dateTime) {
+        return dateTime.replace("T", " ");
+    }
+
     $('#editRow').on('show.bs.modal', function (e) {
         let dateTimeElem = $('#dateTime');
         let dateTimeValue = dateTimeElem.val();
-        dateTimeElem.val(dateTimeValue.replace("T", " "));
+        dateTimeElem.val(formatDateTime(dateTimeValue));
     });
 
     makeEditable(
@@ -86,7 +90,7 @@ $(function () {
                     "data": "dateTime",
                     "render": function (data, type, row) {
                         if (type === "display") {
-                            return data.replace("T", " ").substring(0, 16);
+                            return formatDateTime(data).substring(0, 16);
                         }
                         return data;
                     }

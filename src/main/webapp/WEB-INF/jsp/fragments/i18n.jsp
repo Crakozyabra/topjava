@@ -7,6 +7,6 @@
   <c:forTokens var="key" delims=", " items="common.deleted, common.saved, common.enabled, common.disabled, common.errorStatus, common.confirm">
     i18n["${key}"] = "<spring:message code="${key}"/>";
   </c:forTokens>
-  i18n["addTitle"] = "<spring:message code="${param.add}"/>";
-  i18n["editTitle"] = "<spring:message code="${param.edit}"/>";
+  i18n["addTitle"] = "<spring:message code="${param.source}.add"/>";
+  i18n["editTitle"] = "<spring:message code="${param.source}.edit"/>";
 </script>

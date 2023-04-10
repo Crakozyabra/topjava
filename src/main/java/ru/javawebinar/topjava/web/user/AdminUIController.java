@@ -7,7 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.UserTo;
-import ru.javawebinar.topjava.web.UiController;
+import ru.javawebinar.topjava.util.ValidationUtil;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping(value = "/admin/users", produces = MediaType.APPLICATION_JSON_VALUE)
-public class AdminUIController extends AbstractUserController implements UiController {
+public class AdminUIController extends AbstractUserController {
 
     @Override
     @GetMapping
@@ -38,7 +38,7 @@ public class AdminUIController extends AbstractUserController implements UiContr
 
     @PostMapping
     public ResponseEntity<String> createOrUpdate(@Valid UserTo userTo, BindingResult result) {
-        ResponseEntity<String> response = bindError(result);
+        ResponseEntity<String> response = ValidationUtil.bindError(result);
         if (Objects.nonNull(response)) {
             return response;
         }

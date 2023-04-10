@@ -9,6 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class RootController {
     private static final Logger log = LoggerFactory.getLogger(RootController.class);
 
+    @GetMapping("/")
+    public String root() {
+        log.info("root");
+        return "redirect:meals";
+    }
+
     @GetMapping("/users")
     public String getUsers() {
         log.info("users");
@@ -21,7 +27,7 @@ public class RootController {
         return "login";
     }
 
-    @GetMapping({"/meals", "/"})
+    @GetMapping("/meals")
     public String getMeals() {
         log.info("meals");
         return "meals";
