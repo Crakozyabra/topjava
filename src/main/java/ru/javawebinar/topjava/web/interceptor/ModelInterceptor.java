@@ -16,7 +16,6 @@ public class ModelInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        System.out.println("interceptor: " + request.getQueryString() + "\n" + response.getStatus());
         if (modelAndView != null && !modelAndView.isEmpty()) {
             AuthorizedUser authorizedUser = SecurityUtil.safeGet();
             if (authorizedUser != null) {
