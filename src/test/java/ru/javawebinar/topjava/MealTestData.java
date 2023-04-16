@@ -18,6 +18,11 @@ public class MealTestData {
     public static final int MEAL1_ID = START_SEQ + 3;
     public static final int ADMIN_MEAL_ID = START_SEQ + 10;
 
+    public static final List<String> ERROR_INFO_FIELDS = List.of("\"url\"", "\"type\"", "\"detail\"");
+    public static final String DATE_TIME_MISMATCH = "[dateTime]";
+    public static final String CALORIES_MISMATCH = "[calories]";
+    public static final String DESCRIPTION_MISMATCH = "[description]";
+
     public static final Meal meal1 = new Meal(MEAL1_ID, of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);
     public static final Meal meal2 = new Meal(MEAL1_ID + 1, of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000);
     public static final Meal meal3 = new Meal(MEAL1_ID + 2, of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500);
@@ -36,5 +41,9 @@ public class MealTestData {
 
     public static Meal getUpdated() {
         return new Meal(MEAL1_ID, meal1.getDateTime().plus(2, ChronoUnit.MINUTES), "Обновленный завтрак", 200);
+    }
+
+    public static Meal getNotValidMeal() {
+        return new Meal(null, null, " ", -1);
     }
 }

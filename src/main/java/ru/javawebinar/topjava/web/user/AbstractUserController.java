@@ -3,12 +3,15 @@ package ru.javawebinar.topjava.web.user;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.to.UserTo;
 import ru.javawebinar.topjava.util.UsersUtil;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.List;
+import java.util.Objects;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
@@ -71,5 +74,19 @@ public abstract class AbstractUserController {
     public void enable(int id, boolean enabled) {
         log.info(enabled ? "enable {}" : "disable {}", id);
         service.enable(id, enabled);
+    }
+
+    protected void bindEmailDuplicateError(BindingResult result, Integer userId, String email) {
+        log.info("bindEmailDuplicateError userId {} email {}", userId, email);
+        if (Objects.isNull(result.getFieldError("email"))) {
+            try {
+                User user = getByMail(email);
+                if (!Objects.equals(userId, user.getId())) {
+                    result.rejectValue("email", "error.user.email", "User with this email already exists");
+                }
+            } catch (NotFoundException e) {
+                log.info("such email does not exist yet");
+            }
+        }
     }
 }

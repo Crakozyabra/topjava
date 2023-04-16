@@ -2,6 +2,7 @@ package ru.javawebinar.topjava;
 
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.to.UserTo;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.util.Collections;
@@ -26,6 +27,11 @@ public class UserTestData {
     public static final int ADMIN_ID = START_SEQ + 1;
     public static final int GUEST_ID = START_SEQ + 2;
     public static final int NOT_FOUND = 10;
+
+    public static final String CALORIES_PER_DAY_MISMATCH = "[caloriesPerDay]";
+    public static final String EMAIL_MISMATCH = "[email]";
+    public static final String PASSWORD_MISMATCH = "[password]";
+    public static final String NAME_MISMATCH = "[name]";
 
     public static final User user = new User(USER_ID, "User", "user@yandex.ru", "password", 2005, Role.USER);
     public static final User admin = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", 1900, Role.ADMIN, Role.USER);
@@ -53,5 +59,13 @@ public class UserTestData {
 
     public static String jsonWithPassword(User user, String passw) {
         return JsonUtil.writeAdditionProps(user, "password", passw);
+    }
+
+    public static UserTo getNotValidUserTo() {
+        return new UserTo(null, "N", "new gmail.com", " ", 5);
+    }
+
+    public static User getNotValidUser() {
+        return new User(null, " ", " ", "P", 5, false, null, Collections.singleton(Role.USER));
     }
 }

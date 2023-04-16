@@ -12,9 +12,12 @@ import ru.javawebinar.topjava.util.UsersUtil;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.stringContainsInOrder;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.javawebinar.topjava.MealTestData.ERROR_INFO_FIELDS;
 import static ru.javawebinar.topjava.TestUtil.userHttpBasic;
 import static ru.javawebinar.topjava.UserTestData.*;
 import static ru.javawebinar.topjava.web.user.ProfileRestController.REST_URL;
@@ -65,6 +68,22 @@ class ProfileRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void registerNotValidData() throws Exception {
+        UserTo notValidTo = getNotValidUserTo();
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(notValidTo)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(stringContainsInOrder(ERROR_INFO_FIELDS)))
+                .andExpect(content().string(containsString(CALORIES_PER_DAY_MISMATCH)))
+                .andExpect(content().string(containsString(EMAIL_MISMATCH)))
+                .andExpect(content().string(containsString(NAME_MISMATCH)))
+                .andExpect(content().string(containsString(PASSWORD_MISMATCH)));
+    }
+
+    @Test
     void update() throws Exception {
         UserTo updatedTo = new UserTo(null, "newName", "user@yandex.ru", "newPassword", 1500);
         perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
@@ -74,6 +93,23 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNoContent());
 
         USER_MATCHER.assertMatch(userService.get(USER_ID), UsersUtil.updateFromTo(new User(user), updatedTo));
+    }
+
+    @Test
+    void updateNotValidData() throws Exception {
+        UserTo notValidTo = getNotValidUserTo();
+        perform(MockMvcRequestBuilders.put(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(notValidTo)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(stringContainsInOrder(ERROR_INFO_FIELDS)))
+                .andExpect(content().string(containsString(CALORIES_PER_DAY_MISMATCH)))
+                .andExpect(content().string(containsString(EMAIL_MISMATCH)))
+                .andExpect(content().string(containsString(NAME_MISMATCH)))
+                .andExpect(content().string(containsString(PASSWORD_MISMATCH)));
     }
 
     @Test
