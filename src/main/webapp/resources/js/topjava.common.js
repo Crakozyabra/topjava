@@ -108,8 +108,16 @@ function renderDeleteBtn(data, type, row) {
 function failNoty(jqXHR) {
     closeNoty();
     var errorInfo = jqXHR.responseJSON;
+    let errorMessage = "";
+    errorInfo.detail.forEach(function (item, i, arr) {
+            if (item.includes("error.user.email.duplicate")) {
+                item = "[email] " + i18n["error.user.email.duplicate"];
+            }
+            errorMessage = errorMessage  + item + "<br>";
+        }
+    );
     failedNote = new Noty({
-        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + errorInfo.type + "<br>" + errorInfo.detail,
+        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + errorInfo.type + "<br>" + errorMessage,
         type: "error",
         layout: "bottomRight"
     });

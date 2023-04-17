@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.web.user;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -33,8 +34,7 @@ public class ProfileRestController extends AbstractUserController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo, BindingResult result) {
-        bindEmailDuplicateError(result, userTo.getId(), userTo.getEmail());
+    public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo, BindingResult result) throws BindException {
         ValidationUtil.validate(result);
         User created = super.create(userTo);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -44,11 +44,9 @@ public class ProfileRestController extends AbstractUserController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@Valid @RequestBody UserTo userTo, BindingResult result) {
-        int userId = authUserId();
-        bindEmailDuplicateError(result, userId, userTo.getEmail());
+    public void update(@Valid @RequestBody UserTo userTo, BindingResult result) throws BindException {
         ValidationUtil.validate(result);
-        super.update(userTo, userId);
+        super.update(userTo, authUserId());
     }
 
     @GetMapping("/text")

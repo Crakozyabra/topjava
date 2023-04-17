@@ -23,12 +23,10 @@ public class ProfileUIController extends AbstractUserController {
 
     @PostMapping
     public String updateProfile(@Valid UserTo userTo, BindingResult result, SessionStatus status) {
-        int userId = SecurityUtil.authUserId();
-        bindEmailDuplicateError(result, userId, userTo.getEmail());
         if (result.hasErrors()) {
             return "profile";
         } else {
-            super.update(userTo, userId);
+            super.update(userTo, SecurityUtil.authUserId());
             SecurityUtil.get().setTo(userTo);
             status.setComplete();
             return "redirect:/meals";
@@ -44,7 +42,6 @@ public class ProfileUIController extends AbstractUserController {
 
     @PostMapping("/register")
     public String saveRegister(@Valid UserTo userTo, BindingResult result, SessionStatus status, ModelMap model) {
-        bindEmailDuplicateError(result, userTo.getId(), userTo.getEmail());
         if (result.hasErrors()) {
             model.addAttribute("register", true);
             return "profile";

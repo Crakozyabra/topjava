@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.web.user;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -32,8 +33,7 @@ public class AdminRestController extends AbstractUserController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createWithLocation(@Valid @RequestBody User user, BindingResult result) {
-        bindEmailDuplicateError(result, user.getId(), user.getEmail());
+    public ResponseEntity<User> createWithLocation(@Valid @RequestBody User user, BindingResult result) throws BindException {
         ValidationUtil.validate(result);
         User created = super.create(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -51,8 +51,7 @@ public class AdminRestController extends AbstractUserController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@Valid @RequestBody User user, BindingResult result, @PathVariable int id) {
-        bindEmailDuplicateError(result, user.getId(), user.getEmail());
+    public void update(@Valid @RequestBody User user, BindingResult result, @PathVariable int id) throws BindException {
         ValidationUtil.validate(result);
         super.update(user, id);
     }

@@ -7,6 +7,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
+import ru.javawebinar.topjava.util.exception.ErrorType;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
@@ -110,6 +111,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(stringContainsInOrder(ERROR_INFO_FIELDS)))
+                .andExpect(content().string(containsString(ErrorType.VALIDATION_ERROR.toString())))
                 .andExpect(content().string(containsString(CALORIES_PER_DAY_MISMATCH)))
                 .andExpect(content().string(containsString(EMAIL_MISMATCH)))
                 .andExpect(content().string(containsString(NAME_MISMATCH)))
@@ -143,6 +145,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(stringContainsInOrder(ERROR_INFO_FIELDS)))
+                .andExpect(content().string(containsString(ErrorType.VALIDATION_ERROR.toString())))
                 .andExpect(content().string(containsString(CALORIES_PER_DAY_MISMATCH)))
                 .andExpect(content().string(containsString(EMAIL_MISMATCH)))
                 .andExpect(content().string(containsString(NAME_MISMATCH)))
