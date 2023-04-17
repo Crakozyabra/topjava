@@ -115,7 +115,8 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().string(containsString(CALORIES_PER_DAY_MISMATCH)))
                 .andExpect(content().string(containsString(EMAIL_MISMATCH)))
                 .andExpect(content().string(containsString(NAME_MISMATCH)))
-                .andExpect(content().string(containsString(PASSWORD_MISMATCH)));
+                .andExpect(content().string(containsString(PASSWORD_MISMATCH)))
+                .andExpect(content().string(containsString(DUPLICATE_EMAIL_CODE_ERROR)));
     }
 
     @Test
@@ -149,7 +150,8 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().string(containsString(CALORIES_PER_DAY_MISMATCH)))
                 .andExpect(content().string(containsString(EMAIL_MISMATCH)))
                 .andExpect(content().string(containsString(NAME_MISMATCH)))
-                .andExpect(content().string(containsString(PASSWORD_MISMATCH)));
+                .andExpect(content().string(containsString(PASSWORD_MISMATCH)))
+                .andExpect(content().string(containsString(DUPLICATE_EMAIL_CODE_ERROR)));;
     }
 
 

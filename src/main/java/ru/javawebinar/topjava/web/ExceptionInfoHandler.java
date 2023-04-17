@@ -41,6 +41,9 @@ public class ExceptionInfoHandler {
     @ResponseStatus(HttpStatus.CONFLICT)  // 409
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorInfo conflict(HttpServletRequest req, DataIntegrityViolationException e) {
+        if(e.getRootCause().getMessage().contains("meal_unique_user_datetime_idx")) {
+            e = new DataIntegrityViolationException("error.meal.datetime.unique");
+        }
         return logAndGetErrorInfo(req, e, true, DATA_ERROR);
     }
 

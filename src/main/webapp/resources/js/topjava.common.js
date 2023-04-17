@@ -113,7 +113,10 @@ function failNoty(jqXHR) {
             if (item.includes("error.user.email.duplicate")) {
                 item = "[email] " + i18n["error.user.email.duplicate"];
             }
-            errorMessage = errorMessage  + item + "<br>";
+            if (item.includes("error.meal.datetime.unique")) {
+                item = "[datetime] " + i18n["error.meal.datetime.unique"];
+            }
+            errorMessage = errorMessage + item + "<br>";
         }
     );
     failedNote = new Noty({

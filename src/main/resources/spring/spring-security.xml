@@ -28,7 +28,10 @@
                     authentication-failure-url="/login?error=true"
                     login-processing-url="/spring_security_check"/>
         <logout logout-success-url="/login"/>
+        <custom-filter before="FIRST" ref="additionalEncodingSpringSecurityFilter"/>
     </http>
+
+    <beans:bean class="ru.javawebinar.topjava.web.filter.AdditionalEncodingSpringSecurityFilter" id="additionalEncodingSpringSecurityFilter"/>
 
     <authentication-manager>
         <authentication-provider user-service-ref="userService">

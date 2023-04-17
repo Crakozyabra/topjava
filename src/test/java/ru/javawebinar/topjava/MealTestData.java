@@ -22,6 +22,7 @@ public class MealTestData {
     public static final String DATE_TIME_MISMATCH = "[dateTime]";
     public static final String CALORIES_MISMATCH = "[calories]";
     public static final String DESCRIPTION_MISMATCH = "[description]";
+    public static final String DUPLICATE_DATE_TIME_CODE_ERROR = "error.meal.datetime.unique";
 
     public static final Meal meal1 = new Meal(MEAL1_ID, of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);
     public static final Meal meal2 = new Meal(MEAL1_ID + 1, of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000);

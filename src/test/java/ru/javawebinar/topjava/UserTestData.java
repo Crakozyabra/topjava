@@ -32,6 +32,7 @@ public class UserTestData {
     public static final String EMAIL_MISMATCH = "[email]";
     public static final String PASSWORD_MISMATCH = "[password]";
     public static final String NAME_MISMATCH = "[name]";
+    public static final String DUPLICATE_EMAIL_CODE_ERROR = "error.user.email.duplicate";
 
     public static final User user = new User(USER_ID, "User", "user@yandex.ru", "password", 2005, Role.USER);
     public static final User admin = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", 1900, Role.ADMIN, Role.USER);
@@ -62,10 +63,10 @@ public class UserTestData {
     }
 
     public static UserTo getNotValidUserTo() {
-        return new UserTo(null, "N", "new gmail.com", " ", 5);
+        return new UserTo(null, "N", "guest@gmail.com", " ", 5);
     }
 
     public static User getNotValidUser() {
-        return new User(null, " ", " ", "P", 5, false, null, Collections.singleton(Role.USER));
+        return new User(null, " ", "guest@gmail.com", "P", 5, false, null, Collections.singleton(Role.USER));
     }
 }
