@@ -18,7 +18,7 @@ public class MealTestData {
     public static final int MEAL1_ID = START_SEQ + 3;
     public static final int ADMIN_MEAL_ID = START_SEQ + 10;
 
-    public static final List<String> ERROR_INFO_FIELDS = List.of("\"url\"", "\"type\"", "\"detail\"");
+    public static final List<String> ERROR_INFO_FIELDS = List.of("\"url\"", "\"type\"", "\"details\"");
     public static final String DATE_TIME_MISMATCH = "[dateTime]";
     public static final String CALORIES_MISMATCH = "[calories]";
     public static final String DESCRIPTION_MISMATCH = "[description]";

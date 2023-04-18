@@ -109,7 +109,7 @@ function failNoty(jqXHR) {
     closeNoty();
     var errorInfo = jqXHR.responseJSON;
     let errorMessage = "";
-    errorInfo.detail.forEach(function (item, i, arr) {
+    errorInfo.details.forEach(function (item, i, arr) {
             if (item.includes("error.user.email.duplicate")) {
                 item = "[email] " + i18n["error.user.email.duplicate"];
             }
