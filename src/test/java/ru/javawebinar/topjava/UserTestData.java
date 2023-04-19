@@ -62,6 +62,10 @@ public class UserTestData {
         return JsonUtil.writeAdditionProps(user, "password", passw);
     }
 
+    public static String jsonWithPasswordTo(UserTo userTo, String passw) {
+        return JsonUtil.writeAdditionProps(userTo, "password", passw);
+    }
+
     public static UserTo getNotValidUserTo() {
         return new UserTo(null, "N", "guest@gmail.com", " ", 5);
     }

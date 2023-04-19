@@ -5,9 +5,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.model.User;
-import ru.javawebinar.topjava.service.UserService;
+import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.to.UserTo;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.util.Objects;
@@ -15,10 +14,10 @@ import java.util.Objects;
 @Component
 public class UserEmailValidator implements Validator {
 
-    private UserService userService;
+    private UserRepository userRepository;
 
-    public UserEmailValidator(UserService userService) {
-        this.userService = userService;
+    public UserEmailValidator(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -37,12 +36,11 @@ public class UserEmailValidator implements Validator {
             }
         }
         if (Objects.isNull(errors.getFieldError("email"))) {
-            try {
-                User saved = userService.getByEmail(email);
+            User saved = userRepository.getByEmail(email);
+            if (Objects.nonNull(saved)) {
                 if (!Objects.equals(userId, saved.getId())) {
                     errors.rejectValue("email", "error.user.email.duplicate", "error.user.email.duplicate");
                 }
-            } catch (NotFoundException e) {
             }
         }
     }
