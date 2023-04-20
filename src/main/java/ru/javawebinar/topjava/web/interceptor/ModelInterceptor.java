@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.web.interceptor;
 
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
